@@ -10,6 +10,8 @@ find_package(glfw3 REQUIRED)
 
 set(CMAKE_BUILD_TYPE Debug)
 
+
+
 include_directories(
     src/core
     src/shader
@@ -18,8 +20,8 @@ include_directories(
 
 # Set source files
 set(SOURCES
-    # src/PiRender.cpp
-    src/TestRender4  # big scene
+    src/PiRender.cpp
+    # src/TestRender4  # big scene
     # src/TestRender5_rotation.cpp
 
     # src/TestRender_batch.cpp
@@ -38,7 +40,7 @@ set(SOURCES
     src/scene/piScene.cpp
     src/scene/piSpritesheet.cpp
     src/scene/piImage.cpp
- 
+
     )
 
 # Add executable

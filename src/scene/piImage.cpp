@@ -13,7 +13,7 @@
 //======================================================================================================
 
 // Vertex shader source code
-const char* sourceVertex =
+static const char* sourceVertex =
 
 R"(
     attribute vec3 aPosition;
@@ -36,7 +36,7 @@ R"(
 )";
 
 // Fragment shader source code
-const char* sourceFragment = R"(
+static const char* sourceFragment = R"(
 
     varying vec4 v_Color;
     varying vec2 v_TexCoord;
@@ -72,7 +72,7 @@ piImage::piImage()
 
     shaderProgram_ = piUtils::createProgramFromSource( sourceVertex, sourceFragment );
 
-// shader = 
+// shader =
     glUseProgram(shaderProgram_);
     checkGLError("piImage::piImage() >> shaderProgram_ ... ");
 

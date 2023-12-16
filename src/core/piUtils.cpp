@@ -157,6 +157,11 @@ void checkGLError(const char* operation)
 
 //======================================================================================================
 
+/*
+If successful, glCreateShader returns a non-zero value, which is a
+new unique identifier for the shader object. Otherwise, zero is
+returned.
+*/
 GLuint piUtils::createShader(GLenum type, const char *source)
 {
     GLuint shader = glCreateShader(type);
@@ -170,8 +175,13 @@ GLuint piUtils::createShader(GLenum type, const char *source)
     if (!success) {
         GLchar infoLog[512];
         glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
-        fprintf(stderr, "Shader compilation failed: %s\n", infoLog);
+
+        fprintf(stderr, "ERROR: createShader() ... Shader compilation failed: %s\n", infoLog);
+        printf("ERROR: createShader() ... Shader compilation failed: %s\n", infoLog);
         glDeleteShader(shader);
+
+        printf("ERROR: createShader() ... Source: \n === \n %s\n=== \n\n", source);
+
         return 0;
     }
 
@@ -224,8 +234,12 @@ GLuint piUtils::createProgramFromSource( const char *vertexShaderSource, const c
     GLuint vertexShader   = piUtils::createShader(GL_VERTEX_SHADER,   vertexShaderSource);
     checkGLError("createShader - VERTEX");
 
+    // printf("\n DEBUG - createProgramFromSource() ... vertexShader: %d \n", vertexShader);
+
     GLuint fragmentShader = piUtils::createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
     checkGLError("createShader - FRAGMENT");
+
+    // printf("\n DEBUG - createProgramFromSource() ... fragmentShader: %d \n", fragmentShader);
 
     return piUtils::createProgram(vertexShader, fragmentShader);
 }
@@ -235,7 +249,7 @@ GLuint piUtils::createProgramFromSource( const char *vertexShaderSource, const c
 GLuint piUtils::createProgram(GLuint vertexShader, GLuint fragmentShader)
 {
     if (vertexShader == 0 || fragmentShader == 0) {
-        printf("\n ERROR - loading shaders failed. \n\n");
+        printf("\n ERROR - loading shaders failed. - BAD ARGS\n\n");
         return 0;
     }
 

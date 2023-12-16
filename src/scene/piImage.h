@@ -19,7 +19,7 @@ public:
      piImage(piTexturePtr_t tex);
      piImage(piTexturePtr_t tex, float px, float py);
      piImage(piTexturePtr_t tex, float px, float py, float ww, float hh);
-    
+
      piImage(piTexturePtr_t tex, piSpritePtr_t sp);
      piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py);
      piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py, float ww, float hh);
@@ -28,19 +28,19 @@ public:
      piImage(const char *path, float px, float py);
      piImage(const char *path, float px, float py, float ww, float hh);
 
-    
+
     // Factory function
     static piImagePtr_t create()                                                                              { return std::make_shared<piImage>();                        }
-    static piImagePtr_t create(piTexturePtr_t tex)                                                            { return std::make_shared<piImage>(tex);                     } 
-    static piImagePtr_t create(piTexturePtr_t tex, float px, float py)                                        { return std::make_shared<piImage>(tex, px, py);         } 
-    static piImagePtr_t create(piTexturePtr_t tex, float px, float py, float ww, float hh)                    { return std::make_shared<piImage>(tex, px, py, ww, hh); } 
-    static piImagePtr_t create(piTexturePtr_t tex, piSpritePtr_t sp)                                          { return std::make_shared<piImage>(tex, sp);                 } 
-    static piImagePtr_t create(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py)                      { return std::make_shared<piImage>(tex, sp, px, py);         } 
-    static piImagePtr_t create(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py, float ww, float hh)  { return std::make_shared<piImage>(tex, sp, px, py, ww, hh); } 
+    static piImagePtr_t create(piTexturePtr_t tex)                                                            { return std::make_shared<piImage>(tex);                     }
+    static piImagePtr_t create(piTexturePtr_t tex, float px, float py)                                        { return std::make_shared<piImage>(tex, px, py);         }
+    static piImagePtr_t create(piTexturePtr_t tex, float px, float py, float ww, float hh)                    { return std::make_shared<piImage>(tex, px, py, ww, hh); }
+    static piImagePtr_t create(piTexturePtr_t tex, piSpritePtr_t sp)                                          { return std::make_shared<piImage>(tex, sp);                 }
+    static piImagePtr_t create(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py)                      { return std::make_shared<piImage>(tex, sp, px, py);         }
+    static piImagePtr_t create(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py, float ww, float hh)  { return std::make_shared<piImage>(tex, sp, px, py, ww, hh); }
 
-    static piImagePtr_t create(const char *path)                                                              { return std::make_shared<piImage>(path);                    } 
-    static piImagePtr_t create(const char *path, float px, float py)                                          { return std::make_shared<piImage>(path, px, py);            } 
-    static piImagePtr_t create(const char *path, float px, float py, float ww, float hh)                      { return std::make_shared<piImage>(path, px, py, ww, hh);    } 
+    static piImagePtr_t create(const char *path)                                                              { return std::make_shared<piImage>(path);                    }
+    static piImagePtr_t create(const char *path, float px, float py)                                          { return std::make_shared<piImage>(path, px, py);            }
+    static piImagePtr_t create(const char *path, float px, float py, float ww, float hh)                      { return std::make_shared<piImage>(path, px, py, ww, hh);    }
 
     ~piImage();
 

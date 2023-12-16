@@ -14,80 +14,36 @@
 #include <piScene.h>
 #include <piImage.h>
 
-#include <piShaderManager.h>
+#include <piShaderToy.h>
 #include <piSpritesheet.h>
 
 #include <iostream>
 #include <thread>
 #include <chrono>
 
-const char *vertexShaderFile   =   "vertexShader.glsl";
-const char *fragmentShaderFile = "fragmentShader.glsl";
-
-// #define RES_W  480.0f
-// #define RES_H  320.0f
-
-#define RES_W  1280.0f
-#define RES_H   720.0f
-#define FPS      60.0f
+using namespace std::chrono;
 
 static glm::mat4 gMatrix((1.0f));
 
+#define FPS      60.0f
 #define MS_PER_FRAME ((int)(1.0f / FPS * 1000.0f))
 
-//======================================================================================================
-//
+#include <GLFW/glfw3.h>
+#include <iostream>
 
-// Vertex data for the rectangle
-GLfloat vertices[] = {
-
-    -1.0f,  1.0f,  // Vertex 1 (top left)
-    -1.0f, -1.0f,  // Vertex 2 (bottom left)
-     1.0f, -1.0f,  // Vertex 3 (bottom right)
-     1.0f,  1.0f,  // Vertex 4 (top right)
-};
-
-GLuint indices[] = {
-    0, 1, 2,
-    2, 3, 0
-};
-
-GLFWwindow *window;
-
-void errorCallback(int error, const char *description)
-{
-    fprintf(stderr, "Error: %s\n", description);
-}
-
-void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-}
-
-//======================================================================================================
+#define RES_W  1280.0f
+#define RES_H   720.0f
 
 int main()
 {
-    piScene scene;
-    piSpritesheet sheet;
+    // piShader shader;
 
-    sheet.read("./spritesheet.json");
-
-   // piSprite *pStars0 = sheet.getSprite("0of5stars.png");
-    piSprite *pStars1 = sheet.getSprite("1of5stars.png");
-    // piSprite *pStars2 = sheet.getSprite("2of5stars.png");
-    // piSprite *pStars3 = sheet.getSprite("3of5stars.png");
-    // piSprite *pStars4 = sheet.getSprite("4of5stars.png");
-
-    // std::pair<bool, Sprite> sp = sheet.getSprite("1of5stars.png");
-
-    // const Sprite& sprite = sp.second;
-
-    // std::cout << " JSON: " << std::endl << sprite << std::endl;
-
-    glfwSetErrorCallback(errorCallback);
+    // shader.addUniforms( {
+    //     { "pos1", "ivec2" },
+    //     { "pos3", "vec2"  },
+    //     { "pos2", "float" },
+    //     { "pos1", "ivec2" }
+    // });
 
     if (!glfwInit())
     {
@@ -98,42 +54,20 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    window = glfwCreateWindow(RES_W, RES_H, "OpenGL ES 2.0 Triangle", NULL, NULL);
-    if (!window)
-    {
-        fprintf(stderr, "Failed to create GLFW window\n");
+    // Create a GLFW window
+    GLFWwindow* window = glfwCreateWindow(RES_W, RES_H, "OpenGL ES 2.0 Example", nullptr, nullptr);
+    if (!window) {
+        std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-        return EXIT_FAILURE;
+        return -1;
     }
 
-    // Set the window position (replace these values with the desired position)
-    glfwSetWindowPos(window, 2500, 750);
-    glfwSetKeyCallback(window, keyCallback);
+    // Make the window's context current
     glfwMakeContextCurrent(window);
+    glfwSetWindowPos(window, 2500, 750);
     glfwSwapInterval(1); // 1 for vsync, 0 for no vsync
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // SCENE
-    //
-    // Set up orthographic projection matrix
-    glm::mat4 projection = glm::ortho(0.0f, RES_W, 0.0f, RES_H, -1.0f, 1.0f); // 2D
-
-
-    piImage padd("STpadd_fg_1280_720.png",          RES_W / 2.0f, RES_H / 2.0f);
-    padd.setScale(0.95f);
-
-    scene.addObject( &padd );
-
-    scene.addObject( new piImage("ball.png",          RES_W * 0.525f, RES_H * 0.25f)) ;
-    scene.addObject( new piImage("Smiling_Face.png",  RES_W * 0.525f, RES_H * 0.5f)) ;
-    // scene.addObject( new piImage("Robin_240_160.png", 240/2, 160/2, 200, 200)) ;
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    GLuint backgroundProgram;
-
-    // Set up OpenGL ES 2.0
-    backgroundProgram = piUtils::createProgramFromFiles(vertexShaderFile, fragmentShaderFile);
-    glUseProgram(backgroundProgram);
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -141,107 +75,90 @@ int main()
 
     glViewport(0, 0, RES_W, RES_H);
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Set up a simple orthographic projection matrix
+    glm::mat4 projection = glm::ortho(0.0f, RES_W, 0.0f, RES_H, -1.0f, 1.0f); // 2D
 
-    GLuint backgroundVbo, backgroundEbo;
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    // Generate and bind the VBO
-    glGenBuffers(1, &backgroundVbo);
-    glBindBuffer(GL_ARRAY_BUFFER, backgroundVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    piScene scene;
 
-    // Generate and bind the EBO
-    glGenBuffers(1, &backgroundEbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backgroundEbo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+#define INCLUDE_BG
+#ifdef INCLUDE_BG
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // UNIFORMS
-    //
-    // Get the location of the uniform variable iResolution
-    GLuint iResolutionLoc = GET_UNIFORM_LOCATION(backgroundProgram, "iResolution");
-    GLuint iTimeLoc       = GET_UNIFORM_LOCATION(backgroundProgram, "iTime");
+    piShaderToy background;
+    background.setSize( RES_W, RES_H );
+    background.setPos(RES_W/2, RES_H/2);
 
-    // Set the resolution (width and height) as a vec2
-    GLfloat resolution[2] = {RES_W, RES_H};
-    glUniform2fv(iResolutionLoc, 1, resolution);
+    scene.addObject( background );
+    // background.setScale(0.5);
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // ATTRIBUTES
-    //
-    // Get the attribute location from the shader program
+#endif
 
-    GLint posAttrib = glGetAttribLocation(backgroundProgram, "vPosition");
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-    checkGLError("Background - posAttrib ... ");
+#define INCLUDE_SCENE
+#ifdef INCLUDE_SCENE
 
-    // Unbind the VAO to store the EBO binding
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+#if 0
+    piSpritesheet sheet("spritesheet.json");
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    piSpritePtr_t pSparkLogo = sheet.getSprite("Spark_logo.png");
 
-    while (!glfwWindowShouldClose(window))
+    float sw = pSparkLogo->frame.w;
+    float sh = pSparkLogo->frame.h;
+
+    piTexturePtr_t sheetTex = sheet.getTexture();
+    piImagePtr_t  sparkLogo = piImage::create(sheetTex, pSparkLogo, 200, 200, sw, sh);
+    scene.addObject( sparkLogo );
+#endif
+
+    piTexturePtr_t   tex = piTexture::create("ball.png");
+    piObjectPtr_t  ball0 = piImage::create(tex, RES_W * 0.25f, RES_H * 0.25f);
+    scene.addObject( ball0 );
+
+    // piObjectPtr_t ball = piImage::create("ball.png", RES_W * 0.25f, RES_H * 0.25f);
+    // scene.addObject( ball );
+
+    // piObjectPtr_t face      = piImage::create("Smiling_Face.png",RES_W/4, RES_H/2);
+    // scene.addObject( face );
+
+    // face->setAccX(10.01);
+    // face->setAccR(10.01);
+    // face->setAngleDegrees(45.0);
+#endif
+
+    // Main rendering loop
+    while (!glfwWindowShouldClose(window) )
     {
         float currentTime = glfwGetTime();
-        glClear(GL_COLOR_BUFFER_BIT );
 
-        checkGLError("Background - RENDER ... ");
+        // Poll for and process events
+        glfwPollEvents();
 
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        //
-        // BACKGROUND
-        //
+        // Clear the color buffer
+        glClearColor(0.0f, 0.00f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(backgroundProgram);
-
-        // Set the time uniform in the shader
-        glUniform1f(iTimeLoc, currentTime);
-
-        // Bind the VBO + EBO for the background
-        glBindBuffer(GL_ARRAY_BUFFER, backgroundVbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backgroundEbo);
-
-        glEnableVertexAttribArray(posAttrib);
-        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-        // Draw background using the EBO
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        glDisableVertexAttribArray(posAttrib);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);          // Unbind
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);  // Unbind
-        glBindTexture(GL_TEXTURE_2D, 0);           // Unbind
-        glUseProgram(0);                           // Unbind
-
-        checkGLError("Background - Done ... ");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         //
         // SCENE
         //
+
         scene.update(projection, currentTime);
         scene.draw();
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+        // Swap buffers
         glfwSwapBuffers(window);
-        glfwPollEvents();
 
-        // Sleep for 2 milseconds
-        std::this_thread::sleep_for(std::chrono::milliseconds(MS_PER_FRAME));
-    } // WHILE
+        // Sleep for a bit ...
+        std::this_thread::sleep_for(16ms);
+    }
 
-    glDeleteProgram(backgroundProgram);
+    // Cleanup
 
-    glfwDestroyWindow(window);
+    // Terminate GLFW
     glfwTerminate();
 
-    return EXIT_SUCCESS;
+    return 0;
 }
-//======================================================================================================
-//======================================================================================================
-
-
