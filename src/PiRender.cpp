@@ -118,12 +118,12 @@ int main()
     // piObjectPtr_t ball = piImage::create("ball.png", RES_W * 0.25f, RES_H * 0.25f);
     // scene.addObject( ball );
 
-    // piObjectPtr_t face      = piImage::create("Smiling_Face.png",RES_W/4, RES_H/2);
-    // scene.addObject( face );
+    piObjectPtr_t face      = piImage::create("Smiling_Face.png",RES_W/4, RES_H/2);
+    scene.addObject( face );
 
-    // face->setAccX(10.01);
-    // face->setAccR(10.01);
-    // face->setAngleDegrees(45.0);
+    face->setAccX(10.01);
+    face->setAccR(10.01);
+    face->setAngleDegrees(45.0);
 #endif
 
     // Main rendering loop
