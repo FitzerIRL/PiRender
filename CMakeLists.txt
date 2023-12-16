@@ -51,7 +51,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(PiRender PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_include_directories(PiRender PRIVATE ${CMAKE_SOURCE_DIR}/deps)
 target_include_directories(PiRender PRIVATE ${CMAKE_SOURCE_DIR}/deps/rt)
-target_include_directories(PiRender PRIVATE ${CMAKE_SOURCE_DIR}/deps/glm-master)
+target_include_directories(PiRender PRIVATE ${CMAKE_SOURCE_DIR}/deps/glm)
 
 
 # Link against GLFW, GLESv2, and OpenGL
