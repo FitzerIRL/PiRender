@@ -44,6 +44,10 @@ public:
     void addObject(piObjectPtr_t obj);
 
     void removeObject( piObject &obj);
+    void removeObject(piObjectPtr_t obj);
+
+
+    int getSize() { return objects.size() ; };
 
     // void unpack(const std::vector<float>& flatData);
     // void pack();

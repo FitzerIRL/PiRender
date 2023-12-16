@@ -40,13 +40,21 @@ piValue::piValue(glm::vec4 v)           :mType(0) { setVec4(v);   }
 // piValue::piValue(const rtFunctionRef& v):mType(0) { setFunction(v); }
 piValue::piValue(const piValue& v)      :mType(0) { setValue(v);  }
 // piValue::piValue(voidPtr v)             :mType(0) { setVoidPtr(v); }
-piValue::piValue(piValue&& v) noexcept  :mType(v.mType), mValue(v.mValue), mIsEmpty(v.mIsEmpty)
+// piValue::piValue(piValue&& v) noexcept  :mType(v.mType), mValue(v.mValue), mIsEmpty(v.mIsEmpty)
+// {
+//   // v.mValue.stringValue = nullptr;
+//   // v.mValue.objectValue = nullptr;
+//   // v.mValue.functionValue = nullptr;
+//   // v.mValue.voidPtrValue = nullptr;
+// }
+
+piValue::piValue(piValue&& v) noexcept
+    : mType(v.mType), mValue(std::move(v.mValue)), mIsEmpty(v.mIsEmpty)
 {
-  // v.mValue.stringValue = nullptr;
-  // v.mValue.objectValue = nullptr;
-  // v.mValue.functionValue = nullptr;
-  // v.mValue.voidPtrValue = nullptr;
+    // After moving, the original object should be in a valid but unspecified state.
+    v.setEmpty();
 }
+
 
 piValue::~piValue()
 {
@@ -247,21 +255,21 @@ void piValue::setDouble(double v)
 void piValue::setVec2(glm::vec2 &v)
 {
   setEmpty();
-  mType    = PI_doubleType; mValue.vec2Value = v;
+  mType    = PI_vec2Type; mValue.vec2Value = v;
   mIsEmpty = false;
 }
 
 void piValue::setVec3(glm::vec3 &v)
 {
   setEmpty();
-  mType    = PI_doubleType; mValue.vec3Value = v;
+  mType    = PI_vec3Type; mValue.vec3Value = v;
   mIsEmpty = false;
 }
 
 void piValue::setVec4(glm::vec4 &v)
 {
   setEmpty();
-  mType    = PI_doubleType; mValue.vec4Value = v;
+  mType    = PI_vec4Type; mValue.vec4Value = v;
   mIsEmpty = false;
 }
 

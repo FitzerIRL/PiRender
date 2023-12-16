@@ -1,6 +1,6 @@
 #include <piScene.h>
 
-#include <memory> 
+#include <memory>
 
 piScene::piScene() {}
 
@@ -30,31 +30,22 @@ void piScene::addObject(piObjectPtr_t obj)
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// void piScene::removeObject(piObject &obj)
-// {
-//     // Remove the object from the vector
-//     auto it = std::find(objects.begin(), objects.end(), obj);
-
-//     if (it != objects.end())
-//     {
-//         objects.erase(it);
-//         //delete obj; // Don't forget to delete the removed object
-//     }
-// }
-
-
 void piScene::removeObject(piObject& obj)
 {
-    // auto it = std::find(objects.begin(), objects.end(),
-    //                     [&obj](const std::shared_ptr<piObject>& ptr)
-    //                     {
-    //                         return *ptr == obj; // Assuming piObject has an equality operator defined
-    //                     });
+    auto it = std::remove_if(objects.begin(), objects.end(),
+                             [&obj](const piObjectPtr_t& element) {
+                                 return element.get() == &obj;
+                             });
 
-    // if (it != objects.end())
-    // {
-    //     objects.erase(it);
-    // }
+    objects.erase(it, objects.end());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+void piScene::removeObject(piObjectPtr_t obj)
+{
+    // Use erase-remove idiom to remove the specified object from the vector
+    objects.erase(std::remove(objects.begin(), objects.end(), obj), objects.end());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

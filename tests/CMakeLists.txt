@@ -46,7 +46,8 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_SOURCE_DIR}/../src/core/piTexture.cpp
 
     ${CMAKE_SOURCE_DIR}/../src/scene/piImage.cpp
-    ${CMAKE_SOURCE_DIR}/../src/scene/piImage.cpp
+    ${CMAKE_SOURCE_DIR}/../src/scene/piScene.cpp
+    ${CMAKE_SOURCE_DIR}/../src/scene/piSpritesheet.cpp
 
 
     ${TEST_FILES} )

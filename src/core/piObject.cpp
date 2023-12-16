@@ -145,34 +145,10 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 
     // M = T * R * S * T
 
-    // glm::mat4 model =    glm::translate(glm::mat4(1.0f), glm::vec3(-pos_x, -pos_y,     0.0f)) *
-    //                      glm::scale(    glm::mat4(1.0f), glm::vec3(scale_x * obj_w, scale_y * obj_h, 1.0f)) *
-    //                      glm::rotate(   glm::mat4(1.0f), glm::radians(angle_deg), about_y_axis) *
-    //                      glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y,     0.0f));
-
-
-    // M = T * R * S
-
-    // glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y,     0.0f)) *
-    //                   glm::rotate(   glm::mat4(1.0f), glm::radians(angle_deg), about_y_axis) *
-    //                   glm::scale(    glm::mat4(1.0f), glm::vec3(scale_x * obj_w, scale_y * obj_h, 1.0f));
-
-
     glm::mat4 model = //glm::translate(glm::mat4(1.0f), glm::vec3(-pos_x, -pos_y, 0.0)) *
                       glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y, 0.0f)) *
                       glm::rotate(   glm::mat4(1.0f), glm::radians(-angle_deg), about_y_axis) *
                       glm::scale(    glm::mat4(1.0f), glm::vec3(scale_x * obj_w, scale_y * obj_h, 1.0f));
-
-
-    // M = T * R * S * T
-
-    // glm::mat4 t(1);
-    // t = glm::translate(t, glm::vec3(-pos_x, -pos_y,0));
-    // t = glm::rotate(   t, glm::radians(angle_deg), about_y_axis);
-    // t = glm::scale(    t, glm::vec3(scale_x * obj_w, scale_y * obj_h, 1.0f));
-    // t = glm::translate(t, glm::vec3(pos_x, pos_y,0.0f));
-
-    // glm::mat4 model = t;
 
     // analyzeTransformation(model, "model"); // DEBUG
     // analyzeTransformation(projection, "projection"); // DEBUG
