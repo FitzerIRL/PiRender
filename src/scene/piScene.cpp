@@ -30,12 +30,21 @@ void piScene::addObject(piObjectPtr_t obj)
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void piScene::removeObject(piObject& obj)
+// void piScene::removeObject(piObject& obj)
+// {
+//     auto it = std::remove_if(objects.begin(), objects.end(),
+//                              [&obj](const piObjectPtr_t& element) {
+//                                  return element.get() == &obj;
+//                              });
+
+//     objects.erase(it, objects.end());
+// }
+
+void piScene::removeObject(piObject &obj)
 {
-    auto it = std::remove_if(objects.begin(), objects.end(),
-                             [&obj](const piObjectPtr_t& element) {
-                                 return element.get() == &obj;
-                             });
+    auto it = std::remove_if(objects.begin(), objects.end(), [&](const auto &ptr) {
+        return *ptr == obj;
+    });
 
     objects.erase(it, objects.end());
 }

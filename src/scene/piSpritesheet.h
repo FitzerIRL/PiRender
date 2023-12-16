@@ -54,6 +54,16 @@ public:
 }; // CLASS - piSprite
 
 
+// Operator<< for piSpritePtr_t
+inline std::ostream& operator<<(std::ostream& os, const piSpritePtr_t& spritePtr) {
+    if (spritePtr) {
+        os << *spritePtr; // Dereference the pointer and use the existing operator<< for piSprite
+    } else {
+        os << "nullptr"; // Or any other representation for a null pointer
+    }
+    return os;
+}
+
 //======================================================================================================
 //======================================================================================================
 

@@ -17,6 +17,36 @@ public:
      piObject();
     ~piObject();
 
+    bool operator==(const piObject& other) const {
+        // Compare all relevant members for equality
+        return u_mvpMatrix == other.u_mvpMatrix &&
+               iTime == other.iTime &&
+               u_alpha == other.u_alpha &&
+               alpha_ == other.alpha_ &&
+               textureWidth == other.textureWidth &&
+               textureHeight == other.textureHeight &&
+               obj_w == other.obj_w &&
+               obj_h == other.obj_h &&
+               scale_x == other.scale_x &&
+               scale_y == other.scale_y &&
+               pos_x == other.pos_x &&
+               pos_y == other.pos_y &&
+               vel_x == other.vel_x &&
+               vel_y == other.vel_y &&
+               acc_x == other.acc_x &&
+               acc_y == other.acc_y &&
+               vel_r == other.vel_r &&
+               acc_r == other.acc_r &&
+               angle == other.angle &&
+               angle_deg == other.angle_deg &&
+               time == other.time &&
+               last_secs == other.last_secs &&
+               name == other.name &&
+               vertices == other.vertices &&
+               indices == other.indices &&
+               mvpMatrix == other.mvpMatrix;
+    }
+
     void reset();
 
     virtual void draw() {}; // pure virtual

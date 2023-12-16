@@ -1,3 +1,6 @@
+
+#include <ostream>
+
 #include <gtest/gtest.h>
 #include <piSpritesheet.h>
 
@@ -24,7 +27,7 @@ TEST_F(PiSpritesheetTest, DefaultConstructor) {
 //----------------------------------------------------------------------------------------------------
 
 TEST_F(PiSpritesheetTest, ReadFromFile) {
-    std::string path = "path/to/spritesheet.json";
+    std::string path = "spritesheet.json";
     ASSERT_TRUE(spritesheet.read(path));
     EXPECT_GT(spritesheet.getSprites().size(), 0);
     EXPECT_NE(spritesheet.getTexture(), nullptr);
@@ -35,11 +38,12 @@ TEST_F(PiSpritesheetTest, ReadFromFile) {
 //----------------------------------------------------------------------------------------------------
 
 TEST_F(PiSpritesheetTest, GetSprite) {
-    std::string path = "path/to/spritesheet.json";
+    std::string path = "spritesheet.json";
     ASSERT_TRUE(spritesheet.read(path));
 
-    std::string spriteName = "exampleSprite";
+    std::string spriteName = "ball.png";
     piSpritePtr_t sprite = spritesheet.getSprite(spriteName);
+
     EXPECT_NE(sprite, nullptr);
     EXPECT_EQ(sprite->name, spriteName);
 }
@@ -47,7 +51,7 @@ TEST_F(PiSpritesheetTest, GetSprite) {
 //----------------------------------------------------------------------------------------------------
 
 TEST_F(PiSpritesheetTest, GetNonexistentSprite) {
-    std::string path = "path/to/spritesheet.json";
+    std::string path = "spritesheet.json";
     ASSERT_TRUE(spritesheet.read(path));
 
     std::string nonexistentSpriteName = "nonexistentSprite";

@@ -31,7 +31,7 @@ TEST_F(PiTextureTest, DefaultConstructor) {
 
 TEST_F(PiTextureTest, LoadTexture) {
     piTexture tex;
-    const char* imagePath = "path/to/your/image.png";
+    const char* imagePath = "ball.png";
 
     tex.loadTexture(imagePath);
 

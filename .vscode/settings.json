@@ -74,6 +74,8 @@
         "any": "cpp",
         "codecvt": "cpp",
         "forward_list": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "span": "cpp",
+        "unordered_set": "cpp"
     }
 }

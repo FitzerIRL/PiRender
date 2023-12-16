@@ -10,7 +10,7 @@
 
 //======================================================================================================
 
-piTexture::piTexture() : textureID_(-1)
+piTexture::piTexture() : filename_(""), textureW_(0), textureH_(0), textureID_(0)
 {
 }
 

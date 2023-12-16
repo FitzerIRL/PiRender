@@ -33,9 +33,6 @@ private:
 
 class piScene
 {
-private:
-    std::vector<piObjectPtr_t> objects;
-
 public:
     piScene();
     ~piScene();
@@ -46,7 +43,6 @@ public:
     void removeObject( piObject &obj);
     void removeObject(piObjectPtr_t obj);
 
-
     int getSize() { return objects.size() ; };
 
     // void unpack(const std::vector<float>& flatData);
@@ -55,6 +51,8 @@ public:
     void update(glm::mat4 &projection, float time_secs = 0.0f);
     void draw();
 
+private:
+    std::vector<piObjectPtr_t> objects;
 }; // class
 
 //======================================================================================================
