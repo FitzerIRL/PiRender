@@ -28,6 +28,8 @@ include_directories(
 
 # Include directories for the whole project
 include_directories(
+    ${CMAKE_SOURCE_DIR}/../deps/glm
+
     ${CMAKE_SOURCE_DIR}/../src/core
     ${CMAKE_SOURCE_DIR}/../src/shader
     ${CMAKE_SOURCE_DIR}/../src/scene
@@ -40,6 +42,7 @@ list(FILTER TEST_FILES EXCLUDE REGEX ".*CompilerIdCXX.*")
 add_executable(${PROJECT_NAME}
     ${CMAKE_SOURCE_DIR}/../src/core/piUtils.cpp
     ${CMAKE_SOURCE_DIR}/../src/core/piObject.cpp
+    ${CMAKE_SOURCE_DIR}/../src/core/piValue.cpp
     ${CMAKE_SOURCE_DIR}/../src/core/piTexture.cpp
     ${CMAKE_SOURCE_DIR}/../src/scene/piImage.cpp
 
@@ -50,7 +53,6 @@ add_executable(${PROJECT_NAME}
 
 # add_executable(RenderTests ${TEST_FILES})
 # target_link_libraries(RenderTests gtest gtest_main YourMainProjectLibrary)
-
 
 # Link against Google Test libraries
 target_link_libraries(${PROJECT_NAME} gtest glfw GLESv2 gtest_main )

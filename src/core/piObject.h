@@ -16,7 +16,7 @@ public:
 
      piObject();
     ~piObject();
-    
+
     void reset();
 
     virtual void draw() {}; // pure virtual
