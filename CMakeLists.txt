@@ -21,11 +21,6 @@ include_directories(
 # Set source files
 set(SOURCES
     src/PiRender.cpp
-    # src/TestRender4  # big scene
-    # src/TestRender5_rotation.cpp
-
-    # src/TestRender_batch.cpp
-    # src/TestRender_program.cpp
 
     src/core/piObject.cpp
     src/core/piValue.cpp

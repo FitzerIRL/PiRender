@@ -38,7 +38,7 @@ piValue::piValue(glm::vec4 v)           :mType(0) { setVec4(v);   }
 // piValue::piValue(const rtObjectRef& v)  :mType(0) { setObject(v); }
 // piValue::piValue(const rtIFunction* v)  :mType(0) { setFunction(v); }
 // piValue::piValue(const rtFunctionRef& v):mType(0) { setFunction(v); }
-// piValue::piValue(const piValue& v)      :mType(0) { setValue(v);  }
+piValue::piValue(const piValue& v)      :mType(0) { setValue(v);  }
 // piValue::piValue(voidPtr v)             :mType(0) { setVoidPtr(v); }
 piValue::piValue(piValue&& v) noexcept  :mType(v.mType), mValue(v.mValue), mIsEmpty(v.mIsEmpty)
 {
