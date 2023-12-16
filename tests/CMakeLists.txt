@@ -49,6 +49,7 @@ add_executable(${PROJECT_NAME}
     ${CMAKE_SOURCE_DIR}/../src/scene/piScene.cpp
     ${CMAKE_SOURCE_DIR}/../src/scene/piSpritesheet.cpp
 
+    ${CMAKE_SOURCE_DIR}/../src/shader/piShaderToy.cpp
 
     ${TEST_FILES} )
 
