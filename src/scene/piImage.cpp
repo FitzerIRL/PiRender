@@ -172,7 +172,7 @@ piImage::piImage(piTexturePtr_t tex,  float px, float py, float ww, float hh) : 
 piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp) : piImage()
 {
 // std::cout << " ##### sp: " << *sp << std::endl;
-std::cout << " ##### tex: " << tex->texID() << std::endl;
+// std::cout << " ##### tex: " << tex->texID() << std::endl;
 
     texture = tex;
 
@@ -201,7 +201,8 @@ piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py) : piI
     setPosY(py);
 }
 
-piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py, float ww, float hh) : piImage(tex, sp, px, py)
+piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py, float ww, float hh) :
+     piImage(tex, sp, px, py)
 {
     setSizeW(ww);
     setSizeH(hh);
@@ -211,7 +212,7 @@ piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py, float
 
 piImage::piImage(const char *path) : piImage()
 {
-    printf("\nDEBUG: piImage::piImage() ...  ENTER   path: %s ", path);
+    // printf("\nDEBUG: piImage::piImage() ...  ENTER   path: %s ", path);
 
     texture = piTexture::create(path);
 

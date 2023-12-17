@@ -94,28 +94,29 @@ int main()
 
 #endif
 
-piImagePtr_t image = piImage::create();
-
-
 #define INCLUDE_SCENE
 #ifdef INCLUDE_SCENE
 
 #if 1
     piSpritesheetPtr_t sheet = piSpritesheet::create("spritesheet.json");
-    piSpritePtr_t pSparkLogo = sheet->getSprite("Spark_logo.png");
+    piTexturePtr_t  sheetTex = sheet->getTexture();
+    piSpritePtr_t     sprite = sheet->getSprite("5of5stars.png");
 
-    float sw = pSparkLogo->frame.w;
-    float sh = pSparkLogo->frame.h;
+    float sw = sprite->frame.w;
+    float sh = sprite->frame.h;
 
-    piTexturePtr_t sheetTex = sheet->getTexture();
-    piImagePtr_t  sparkLogo = piImage::create(sheetTex, pSparkLogo, 200, 200, sw, sh);
+    // piImagePtr_t sparkLogo = piImage::create(sheetTex, sprite, RES_W/2, RES_H/2, sw, sh);
+   piImagePtr_t sparkLogo = piImage::create(sheetTex, sprite, 0,0, sw, sh);
+//    sparkLogo->setAnchor(1.0, 1.0);
+    // sparkLogo->setAnchor(0.5, 0.5);
+    sparkLogo->setAnchor(0.0, 0.0);
 
     scene.addObject( sparkLogo );
 
 
-std::cout << std::endl << " ##### pSparkLogo: " << *pSparkLogo;
-std::cout << std::endl << " #####        WxH: " << sw << " x " << sh;
-std::cout << std::endl << " #####   sheetTex: " << sheetTex;
+// std::cout << std::endl << " ##### pSparkLogo: " << sprite;
+// std::cout << std::endl << " #####        WxH: " << sw << " x " << sh;
+// std::cout << std::endl << " #####   sheetTex: " << sheetTex;
 
 #endif
 

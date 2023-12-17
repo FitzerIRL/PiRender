@@ -9,6 +9,7 @@ piObject::piObject() :
       pos_x(0.0f),     pos_y(0.0f),
       vel_x(0.0f),     vel_y(0.0f),
       acc_x(0.0f),     acc_y(0.0f),
+      anchor_x(0.5f), anchor_y(0.5f),
       vel_r(0.0f),     acc_r(0.0f),
       angle(0.0f), angle_deg(0.0f),
        time(0.0f), last_secs(0.0f),
@@ -16,9 +17,6 @@ piObject::piObject() :
      dirty_uv(true), dirty_color(true)
 {
     // ctor
-
-   printf("DEBUG: piObject() ... CTOR");
-
 }
 
 //======================================================================================================
@@ -45,12 +43,13 @@ void piObject::reset()
 
 void piObject::updateUVCoordinates(int x, int y, int w, int h, int sw, int sh)
 {
-    const float left    = (x    )        / ( sw );
-    const float right   = (x + w - 1)    / ( sw );
-    const float top0    = (y  + h - 1  ) / ( sh );
-    const float bottom0 = (y )           / ( sh );
+    const float left    = (float) (x )        / ( (float) sw );
+    const float right   = (float) (x + w - 1) / ( (float) sw );
+    const float top0    = (float) (y + h - 1) / ( (float) sh );
+    const float bottom0 = (float) (y )        / ( (float) sh );
 
-   printf("DEBUG: updateUVCoordinates() ... x: %d, y: %d, w: %d, h: %d,   sw: %d, sh: %d", x,y,  w,h,  sw,sh);
+    // printf("\n DEBUG: updateUVCoordinates() ... x: %d, y: %d, w: %d, h: %d,   sw: %d, sh: %d", x,y,  w,h,  sw,sh);
+    // printf("\n DEBUG: updateUVCoordinates() ... L: %f, R: %f, T: %f, B: %f", left, right, top0, bottom0);
 
     const float top     = 1.0 - top0;
     const float bottom  = 1.0 - bottom0;
@@ -63,12 +62,6 @@ void piObject::updateUVCoordinates(int x, int y, int w, int h, int sw, int sh)
     vertices[9*3 + 7 + 0] = right;  vertices[9*3 + 7 + 1] = bottom; // top-right
 
     dirty_uv = true;
-
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);        // Bind VBO
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);          // Unbind VBO
-
-    // checkGLError("piImage::updateUVCoordinates() >> piSprite ! ");
 }
 
 //======================================================================================================
@@ -142,6 +135,8 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 // std::cout << "Scale (scale_y): " << scale_y   << std::endl;
 // std::cout << "Dims    (obj_w): " << obj_w     << std::endl;
 // std::cout << "Dims    (obj_h): " << obj_h     << std::endl;
+// std::cout << "Dims    (pos_x): " << pos_x     << std::endl;
+// std::cout << "Dims    (pos_y): " << pos_y     << std::endl;
 
     float angleInDegrees = angle_deg;//90.0f;
     float angleInRadians = glm::radians(angleInDegrees);
@@ -151,8 +146,14 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 
     // M = T * R * S * T
 
-    glm::mat4 model = //glm::translate(glm::mat4(1.0f), glm::vec3(-pos_x, -pos_y, 0.0)) *
-                      glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y, 0.0f)) *
+    // Anchor offset
+    float mpx = (anchor_x - 0.5 );
+    float mpy = (anchor_y - 0.5 );
+
+    float dx = -(mpx * obj_w);
+    float dy = -(mpy * obj_h);
+
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos_x + dx, pos_y + dy, 0.0f)) *
                       glm::rotate(   glm::mat4(1.0f), glm::radians(-angle_deg), about_y_axis) *
                       glm::scale(    glm::mat4(1.0f), glm::vec3(scale_x * obj_w, scale_y * obj_h, 1.0f));
 

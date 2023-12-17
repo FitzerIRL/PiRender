@@ -59,6 +59,10 @@ public:
     inline float getSizeW()                  { return obj_w; }
     inline float getSizeH()                  { return obj_h; }
 
+    inline void setAnchor( float ax, float ay) { dirty = true; anchor_x = ax; anchor_y = ay; };
+    inline void setAnchorX(float ax)           { dirty = true; anchor_x = ax; };
+    inline void setAnchorY(float ay)           { dirty = true; anchor_y = ay; };
+
     inline void setPos( float px, float py) { dirty = true; pos_x = px; pos_y = py; };
     inline void setPosX(float px)           { dirty = true; pos_x = px; };
     inline void setPosY(float py)           { dirty = true; pos_y = py; };
@@ -115,7 +119,7 @@ public:
     float pos_x, pos_y;
     float vel_x, vel_y;
     float acc_x, acc_y;
-
+    float anchor_x, anchor_y;
     float vel_r, acc_r;
     float angle, angle_deg;
 

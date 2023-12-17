@@ -76,13 +76,13 @@ void piTexture::loadTexture(const char* filename, GLuint* texID, int* width, int
 
 void piTexture::loadTexture(const char *path)
 {
-    printf("\nDEBUG: piTexture::loadTexture(path) ... path: %s", path);
+    // printf("\nDEBUG: piTexture::loadTexture(path) ... path: %s", path);
 
     // Load texture
     loadTexture(path, &textureID_, &textureW_, &textureH_);
 
-    fprintf(stderr, "DEBUG: piTexture::loadTexture(%s) - WxH: %d x %d \n",
-        path, textureW_, textureH_);
+    // fprintf(stderr, "DEBUG: piTexture::loadTexture(%s) - WxH: %d x %d \n",
+    //     path, textureW_, textureH_);
 }
 
 //======================================================================================================

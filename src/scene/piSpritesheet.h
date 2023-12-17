@@ -26,7 +26,8 @@ public:
 class piSprite; // fwd
 typedef std::shared_ptr<piSprite> piSpritePtr_t;
 
-class piSprite {
+class piSprite
+{
 public:
 
     static piSpritePtr_t create() { return std::make_shared<piSprite>(); }
