@@ -1,6 +1,8 @@
 #include <GLES2/gl2.h>
 #pragma once
 
+#include <piCore.h>
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -59,9 +61,9 @@ public:
     inline float getSizeW()                  { return obj_w; }
     inline float getSizeH()                  { return obj_h; }
 
-    inline void setAnchor( float ax, float ay) { dirty = true; anchor_x = ax; anchor_y = ay; };
-    inline void setAnchorX(float ax)           { dirty = true; anchor_x = ax; };
-    inline void setAnchorY(float ay)           { dirty = true; anchor_y = ay; };
+    inline void setAnchor( float ax, float ay) { dirty = true; anchor_x = CLAMP_01(ax); anchor_y = CLAMP_01(ay); };
+    inline void setAnchorX(float ax)           { dirty = true; anchor_x = CLAMP_01(ax); };
+    inline void setAnchorY(float ay)           { dirty = true; anchor_y = CLAMP_01(ay); };
 
     inline void setPos( float px, float py) { dirty = true; pos_x = px; pos_y = py; };
     inline void setPosX(float px)           { dirty = true; pos_x = px; };
@@ -70,9 +72,9 @@ public:
     inline float getPosX()                  { return pos_x; }
     inline float getPosY()                  { return pos_y; }
 
-    inline void setScale( float ss)         { dirty = true; scale_x = ss; scale_y = ss; };
-    inline void setScaleX(float sx)         { dirty = true; scale_x = sx; };
-    inline void setScaleY(float sy)         { dirty = true; scale_y = sy; };
+    inline void setScale( float ss)         { dirty = true; scale_x = CLAMP_01(ss); scale_y = CLAMP_01(ss); };
+    inline void setScaleX(float sx)         { dirty = true; scale_x = CLAMP_01(sx); };
+    inline void setScaleY(float sy)         { dirty = true; scale_y = CLAMP_01(sy); };
 
     void setAngleDegrees(float aa)          { dirty = true; angle_deg = aa; } //angle = aa * M_PI / 180.0f; };
 
@@ -92,7 +94,7 @@ public:
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     float alpha()                           { return alpha_;            }
-    void  setAlpha(float a)                 { dirty = true; alpha_ = a; }
+    void  setAlpha(float a)                 { dirty = true; alpha_ = CLAMP_01(a); }
 
     float visible()                         { return alpha_ > 0.0f;     }
     void  setVisible(bool v)                { dirty = true; alpha_ = (v ? 1.0f : 0.0f); }
