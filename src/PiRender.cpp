@@ -82,7 +82,7 @@ int main()
 
     piScene scene;
 
-#define INCLUDE_BG
+// #define INCLUDE_BG
 #ifdef INCLUDE_BG
 
     piShaderToyPtr_t background = piShaderToy::create();
@@ -94,31 +94,39 @@ int main()
 
 #endif
 
+piImagePtr_t image = piImage::create();
+
 
 #define INCLUDE_SCENE
 #ifdef INCLUDE_SCENE
 
-#if 0
-    piSpritesheet sheet("spritesheet.json");
-
-    piSpritePtr_t pSparkLogo = sheet.getSprite("Spark_logo.png");
+#if 1
+    piSpritesheetPtr_t sheet = piSpritesheet::create("spritesheet.json");
+    piSpritePtr_t pSparkLogo = sheet->getSprite("Spark_logo.png");
 
     float sw = pSparkLogo->frame.w;
     float sh = pSparkLogo->frame.h;
 
-    piTexturePtr_t sheetTex = sheet.getTexture();
+    piTexturePtr_t sheetTex = sheet->getTexture();
     piImagePtr_t  sparkLogo = piImage::create(sheetTex, pSparkLogo, 200, 200, sw, sh);
+
     scene.addObject( sparkLogo );
+
+
+std::cout << std::endl << " ##### pSparkLogo: " << *pSparkLogo;
+std::cout << std::endl << " #####        WxH: " << sw << " x " << sh;
+std::cout << std::endl << " #####   sheetTex: " << sheetTex;
+
 #endif
 
-    piTexturePtr_t   tex = piTexture::create("ball.png");
-    piObjectPtr_t  ball0 = piImage::create(tex, RES_W * 0.25f, RES_H * 0.25f);
-    scene.addObject( ball0 );
+    // piTexturePtr_t   tex = piTexture::create("ball.png");
+    // piObjectPtr_t  ball0 = piImage::create(tex, RES_W * 0.25f, RES_H * 0.25f);
+    // scene.addObject( ball0 );
 
     // piObjectPtr_t ball = piImage::create("ball.png", RES_W * 0.25f, RES_H * 0.25f);
     // scene.addObject( ball );
 
-    // piObjectPtr_t face      = piImage::create("Smiling_Face.png",RES_W/4, RES_H/2);
+    // piObjectPtr_t face = piImage::create("Smiling_Face.png",RES_W/4, RES_H/2);
     // scene.addObject( face );
 
     // face->setAccX(10.01);

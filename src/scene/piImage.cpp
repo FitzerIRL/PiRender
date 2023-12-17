@@ -47,18 +47,21 @@ static const char* sourceFragment = R"(
     void main()
     {
         // Apply the tint only if the alpha value of v_Color is greater than zero
-   //     vec4 color   = texture2D(textureSampler, v_TexCoord);
-    //    gl_FragColor = mix(color, color + v_Color, v_Color.a * color.a); //step(0.0, v_Color.a * color.a));
+       // vec4 color   = texture2D(textureSampler, v_TexCoord);
+       // gl_FragColor = mix(color, color + v_Color, v_Color.a * color.a); //step(0.0, v_Color.a * color.a));
 
 
+        vec4 originalColor = texture2D(textureSampler, v_TexCoord);
+        vec4 tintedColor = vec4(v_Color.rgb, 1.0);
 
-    vec4 originalColor = texture2D(textureSampler, v_TexCoord);
-    vec4 tintedColor = vec4(v_Color.rgb, 1.0);
+        // Blend between the original color and the tinted color based on v_Color.a
+        gl_FragColor = mix(originalColor, tintedColor, originalColor.a > 0.0 ? v_Color.a : 0.0);
 
-    // Blend between the original color and the tinted color based on v_Color.a
-    gl_FragColor = mix(originalColor, tintedColor, originalColor.a > 0.0 ? v_Color.a : 0.0);
 
-// gl_FragColor = vec4(1.0, 0.0, 0.0,  1.0);
+        gl_FragColor = originalColor; // JUNK
+
+
+        // gl_FragColor = vec4(1.0, 0.0, 0.0,  1.0); // JUNK
         // vec4 color   = texture2D(textureSampler, v_TexCoord);
         // gl_FragColor = vec4(color.rgb, color.a * alpha) * vec4(1.0,0.0,0.0, v_Color.a);
     }
@@ -66,7 +69,7 @@ static const char* sourceFragment = R"(
 
 //======================================================================================================
 
-piImage::piImage()
+piImage::piImage() : piObject()
 {
     reset();
 
@@ -169,7 +172,7 @@ piImage::piImage(piTexturePtr_t tex,  float px, float py, float ww, float hh) : 
 piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp) : piImage()
 {
 // std::cout << " ##### sp: " << *sp << std::endl;
-// std::cout << " ##### tex: " << tex.texID() << std::endl;
+std::cout << " ##### tex: " << tex->texID() << std::endl;
 
     texture = tex;
 
@@ -202,16 +205,18 @@ piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py, float
 {
     setSizeW(ww);
     setSizeH(hh);
+
+    printf("\nDEBUG: piImage::piImage() ...  WxH: %d x %d", (int) ww, (int) hh );
 }
 
 piImage::piImage(const char *path) : piImage()
 {
-    printf("\nDEBUG: piImage::piImage() ...  ENTER");
+    printf("\nDEBUG: piImage::piImage() ...  ENTER   path: %s ", path);
 
-    texture.loadTexture(path);
+    texture = piTexture::create(path);
 
-    int w = texture.width();
-    int h = texture.height();
+    int w = texture->width();
+    int h = texture->height();
 
     setSize( w, h );
 
@@ -237,34 +242,23 @@ piImage::piImage(const char *path, float px, float py, float ww, float hh) : piI
 
 piImage::~piImage()
 {
-    GLuint texID = texture.texID();
-
     // Cleanup
     glDeleteBuffers(1,  &VBO);
     glDeleteBuffers(1,  &EBO);
-    glDeleteTextures(1, &texID );
 }
 
 //======================================================================================================
 
 void piImage::draw()
 {
-    GLuint texID = texture.texID();
+    GLuint texID = texture ? texture->texID() : 0;
 
-   // printf("\nDEBUG: piImage::draw() ... textureID: %u ...", texID);
+    // printf("\nDEBUG: piImage::draw() ... textureID: %u ...", texID);
 
     glUseProgram(shaderProgram_);               // Bind Program
     glBindBuffer(GL_ARRAY_BUFFER, VBO);         // Bind VBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // Bind EBO
     glBindTexture(GL_TEXTURE_2D, texID);        // Bind Texture
-
-    if(dirty_uv)
-    {
-        printf("\nDEBUG  piImage::draw() ... dirty_uv   #### ");
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-        dirty_uv = false;
-    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //
@@ -273,6 +267,15 @@ void piImage::draw()
 
     // Set the ALPHA uniform in the shader
     glUniform1f(u_alpha, alpha_);
+
+    if(dirty_uv || dirty_color)
+    {
+        printf("\nDEBUG  piImage::draw() ... dirty_uv: %d  dirty_color: %d   #### ", dirty_uv, dirty_color);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+        dirty_uv = false;
+        dirty_color = false;
+    }
 
     glUniformMatrix4fv(u_mvpMatrix, 1, GL_FALSE, glm::value_ptr( mvpMatrix ));
     checkGLError("piImage::draw() >> Draw - mvpMatrix");
@@ -290,11 +293,15 @@ void piImage::draw()
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // TEXTURE
-    glUniform1i(u_sampler2D, 0);
 
-    glEnableVertexAttribArray(texCoordAttrib);
-    glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(7 * sizeof(GLfloat)));
-    checkGLError("piImage::piImage() >> Draw - texCoordAttrib");
+    if(texID)
+    {
+        glUniform1i(u_sampler2D, 0);
+
+        glEnableVertexAttribArray(texCoordAttrib);
+        glVertexAttribPointer(texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(7 * sizeof(GLfloat)));
+        checkGLError("piImage::piImage() >> Draw - texCoordAttrib");
+    }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // TODO:  Only upload to GPU if changes in data

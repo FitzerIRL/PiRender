@@ -55,9 +55,9 @@ public:
 
 
 // Operator<< for piSpritePtr_t
-inline std::ostream& operator<<(std::ostream& os, const piSpritePtr_t& spritePtr) {
-    if (spritePtr) {
-        os << *spritePtr; // Dereference the pointer and use the existing operator<< for piSprite
+inline std::ostream& operator<<(std::ostream& os, const piSpritePtr_t& ptr) {
+    if (ptr) {
+        os << *ptr; // Dereference the pointer and use the existing operator<< for piSprite
     } else {
         os << "nullptr"; // Or any other representation for a null pointer
     }
@@ -69,9 +69,17 @@ inline std::ostream& operator<<(std::ostream& os, const piSpritePtr_t& spritePtr
 
 typedef std::map<std::string, piSpritePtr_t> SpriteMap_t;
 
+
+class piSpritesheet; // fwd
+typedef std::shared_ptr<piSpritesheet> piSpritesheetPtr_t;
+
 class piSpritesheet
 {
 public:
+
+    // Factory function
+    static piSpritesheetPtr_t create()                        { return std::make_shared<piSpritesheet>();     }
+    static piSpritesheetPtr_t create(const std::string& path) { return std::make_shared<piSpritesheet>(path); }
 
     piSpritesheet();
     piSpritesheet(const std::string& path);
@@ -80,19 +88,15 @@ public:
 
     const SpriteMap_t& getSprites() const;
 
-    //piSprite* getSprite(const std::string& name);
-
     piSpritePtr_t getSprite(const std::string& name);
 
     int getW()  const  { return texture->width();  }
     int getH()  const  { return texture->height(); }
 
-    //piTexture&     getTexture()  { return texture; }
     piTexturePtr_t getTexture()  { return texture; }
 
 private:
 
-  //  piTexture   texture;
     piTexturePtr_t texture;
 
     std::string filename;

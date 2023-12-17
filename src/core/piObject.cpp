@@ -12,9 +12,13 @@ piObject::piObject() :
       vel_r(0.0f),     acc_r(0.0f),
       angle(0.0f), angle_deg(0.0f),
        time(0.0f), last_secs(0.0f),
-     alpha_(1.0f),     dirty(true)
+     alpha_(1.0f),     dirty(true),
+     dirty_uv(true), dirty_color(true)
 {
     // ctor
+
+   printf("DEBUG: piObject() ... CTOR");
+
 }
 
 //======================================================================================================
@@ -46,7 +50,7 @@ void piObject::updateUVCoordinates(int x, int y, int w, int h, int sw, int sh)
     const float top0    = (y  + h - 1  ) / ( sh );
     const float bottom0 = (y )           / ( sh );
 
-   // printf("x: %d, y: %d, w: %d, h: %d,   sw: %d, sh: %d", x,y,  w,h,  sw,sh);
+   printf("DEBUG: updateUVCoordinates() ... x: %d, y: %d, w: %d, h: %d,   sw: %d, sh: %d", x,y,  w,h,  sw,sh);
 
     const float top     = 1.0 - top0;
     const float bottom  = 1.0 - bottom0;
@@ -81,6 +85,8 @@ void piObject::updateColor(const glm::vec4 clr )
     vv[9*1 + 3 + 0] = clr.r;  vv[9*1 + 3 + 1] = clr.g;  vv[9*1 + 3 + 2] = clr.b;  vv[9*1 + 3 + 3] = clr.a;
     vv[9*2 + 3 + 0] = clr.r;  vv[9*2 + 3 + 1] = clr.g;  vv[9*2 + 3 + 2] = clr.b;  vv[9*2 + 3 + 3] = clr.a;
     vv[9*3 + 3 + 0] = clr.r;  vv[9*3 + 3 + 1] = clr.g;  vv[9*3 + 3 + 2] = clr.b;  vv[9*3 + 3 + 3] = clr.a;
+
+    dirty_color = true;
 
 std::cout << std::endl << " updateColor() - AFTER > " << std::endl << vertices << std::endl;
 }

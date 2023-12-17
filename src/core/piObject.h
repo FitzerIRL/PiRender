@@ -120,7 +120,6 @@ public:
     float angle, angle_deg;
 
     float time;
-
     float last_secs;
 
     std::string name;
@@ -132,6 +131,7 @@ public:
 protected:
     bool dirty;
     bool dirty_uv;
+    bool dirty_color;
 
 }; // CLASS - piObject
 

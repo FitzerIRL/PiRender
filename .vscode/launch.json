@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "PiRender",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/build/PiRender", // Adjust the path based on your project structure
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "build PiRender" // Make sure to define this task in tasks.json
+      },
+      {
+        "name": "RenderTest",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/tests/build/RenderTests", // Adjust the path based on your project structure
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "build RenderTests" // Make sure to define this task in tasks.json
+      }
+    ]
+  }

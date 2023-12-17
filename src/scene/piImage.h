@@ -51,7 +51,7 @@ private:
 
     piShaderPtr_t shader;
 
-    piTexture  texture;
+    piTexturePtr_t texture;
 
     int textureWidth, textureHeight;
 

@@ -50,8 +50,8 @@ bool piSpritesheet::read(const std::string& path)
 
     texture = piTexture::create(filename);
 
-    std::cout << "Sprite Sheet >> filename: " << filename << std::endl;
-    std::cout << "Sprite Sheet >> texture: " << texture->texID() << std::endl;
+    // std::cout << std::endl << "Sprite Sheet >> filename: " << filename << std::endl;
+    // std::cout << "Sprite Sheet >> texture: " << texture->texID() << std::endl;
 
     // std::cout << "====================================== START ..." << std::endl;
 

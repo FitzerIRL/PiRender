@@ -67,7 +67,7 @@ void piTexture::loadTexture(const char* filename, GLuint* texID, int* width, int
 
 
     // Print the extracted filename
-    std::cout <<  std::endl << "DEBUG: piTexture::loadTexture(path) ... texID: " << *texID << " ... WxH: " << *width << " x " << *height << std::endl << std::endl;
+    // std::cout <<  std::endl << "DEBUG: piTexture::loadTexture(path) ... texID: " << *texID << " ... WxH: " << *width << " x " << *height << std::endl << std::endl;
 
     stbi_image_free(image);
 }
@@ -89,9 +89,9 @@ void piTexture::loadTexture(const char *path)
 
 piTexture::~piTexture()
 {
-    // printf("\nDEBUG: piTexture::~piTexture() ... ENTER >> textureID_: %d", textureID_);
-    // printf("\nDEBUG: piTexture::~piTexture() ... ENTER >> textureID_: %d", textureID_);
-    // printf("\nDEBUG: piTexture::~piTexture() ... ENTER >> textureID_: %d", textureID_);
+    printf("\nDEBUG: piTexture::~piTexture() ... ENTER >> textureID_: %d    filename_: %s ", textureID_, filename_.c_str());
+    printf("\nDEBUG: piTexture::~piTexture() ... ENTER >> textureID_: %d    filename_: %s ", textureID_, filename_.c_str());
+    printf("\nDEBUG: piTexture::~piTexture() ... ENTER >> textureID_: %d    filename_: %s ", textureID_, filename_.c_str());
 
     // Cleanup
     glDeleteTextures(1, &textureID_);

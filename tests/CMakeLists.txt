@@ -19,6 +19,15 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 
+# Set the build type to Debug
+# set(CMAKE_BUILD_TYPE Debug)
+
+
+# Add the "-g" flag for Debug build type
+# set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+
+
+
 # Include the glm directory
 include_directories(
          ${CMAKE_SOURCE_DIR}/../deps

@@ -54,3 +54,13 @@ private:
     GLuint textureID_;
 
 }; // class - piTexture
+
+// Operator<< for piSpritePtr_t
+inline std::ostream& operator<<(std::ostream& os, const piTexturePtr_t& ptr) {
+    if (ptr) {
+        os << *ptr; // Dereference the pointer and use the existing operator<< for piSprite
+    } else {
+        os << "nullptr"; // Or any other representation for a null pointer
+    }
+    return os;
+}
