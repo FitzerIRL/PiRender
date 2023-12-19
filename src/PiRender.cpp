@@ -13,6 +13,7 @@
 #include <piUtils.h>
 #include <piScene.h>
 #include <piImage.h>
+#include <piAnimation.h>
 
 #include <piShaderToy.h>
 #include <piSpritesheet.h>
@@ -54,6 +55,9 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
+    // Specify GLFW options, including double buffering
+    glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+
     // Create a GLFW window
     GLFWwindow* window = glfwCreateWindow(RES_W, RES_H, "OpenGL ES 2.0 Example", nullptr, nullptr);
     if (!window) {
@@ -82,10 +86,11 @@ int main()
 
     piScene scene;
 
-// #define INCLUDE_BG
+//#define INCLUDE_BG
 #ifdef INCLUDE_BG
 
     piShaderToyPtr_t background = piShaderToy::create();
+    background->setAnchor( 0.5, 0.5 );
     background->setSize( RES_W, RES_H );
     background->setPos(RES_W/2, RES_H/2);
 
@@ -97,21 +102,25 @@ int main()
 #define INCLUDE_SCENE
 #ifdef INCLUDE_SCENE
 
-#if 1
+#if 0
     piSpritesheetPtr_t sheet = piSpritesheet::create("spritesheet.json");
     piTexturePtr_t  sheetTex = sheet->getTexture();
-    piSpritePtr_t     sprite = sheet->getSprite("5of5stars.png");
 
-    float sw = sprite->frame.w;
-    float sh = sprite->frame.h;
+    // float sw = sprite->frame.w;
+    // float sh = sprite->frame.h;
 
     // piImagePtr_t sparkLogo = piImage::create(sheetTex, sprite, RES_W/2, RES_H/2, sw, sh);
-   piImagePtr_t sparkLogo = piImage::create(sheetTex, sprite, 0,0, sw, sh);
-//    sparkLogo->setAnchor(1.0, 1.0);
-    // sparkLogo->setAnchor(0.5, 0.5);
-    sparkLogo->setAnchor(0.0, 0.0);
+    piSpritePtr_t spr1 = sheet->getSprite("5of5stars.png");
+    piImagePtr_t  obj1 = piImage::create(sheetTex, spr1, 0,0);
 
-    scene.addObject( sparkLogo );
+    obj1->setAnchor(0.0, 0.0);
+    scene.addObject( obj1 );
+
+    piSpritePtr_t  spr2 = sheet->getSprite("4of5stars.png");
+    piImagePtr_t   obj2 = piImage::create(sheetTex, spr2, RES_W, RES_H);
+
+    obj2->setAnchor(1.0, 1.0);
+    scene.addObject( obj2 );
 
 
 // std::cout << std::endl << " ##### pSparkLogo: " << sprite;
@@ -124,12 +133,27 @@ int main()
     // piObjectPtr_t  ball0 = piImage::create(tex, RES_W * 0.25f, RES_H * 0.25f);
     // scene.addObject( ball0 );
 
-    // piObjectPtr_t ball = piImage::create("ball.png", RES_W * 0.25f, RES_H * 0.25f);
-    // scene.addObject( ball );
+    piObjectPtr_t ball = piImage::create("ball.png", 10, RES_H * 0.85);
+    ball->setAnchor(0.0, 0.0);
 
-    // piObjectPtr_t face = piImage::create("Smiling_Face.png",RES_W/4, RES_H/2);
-    // scene.addObject( face );
+    piAnimatorPtr_t anim = ball->animateProperty(ball->pos, glm::vec2(ball->pos.x, 0), 8 );
 
+
+    anim->setCallback([ball](piObjectPtr_t obj)
+    {
+        // std::cout << std::endl << "Callback  >>  name: \"" << obj->getName() << "\" ..." << std::endl;
+
+        obj->setAccX(10.01);
+        obj->setAccR(10.01);
+    });
+
+    scene.addObject( ball );
+
+    piObjectPtr_t face = piImage::create("Smiling_Face.png",RES_W/4, RES_H/2);
+    scene.addObject( face );
+    face->setAnchor(1.0, 0.0);
+
+    face->animateProperty( face->pos, glm::vec2(RES_W, face->pos.y), 85 /2 );
     // face->setAccX(10.01);
     // face->setAccR(10.01);
     // face->setAngleDegrees(45.0);

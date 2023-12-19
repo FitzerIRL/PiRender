@@ -10,6 +10,8 @@ find_package(glfw3 REQUIRED)
 
 set(CMAKE_BUILD_TYPE Debug)
 
+# Set the build type to Release
+# set(CMAKE_BUILD_TYPE Release)
 
 
 include_directories(

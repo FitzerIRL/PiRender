@@ -161,6 +161,8 @@ piImage::piImage(piTexturePtr_t tex, float px, float py) : piImage(tex)
 {
     setPosX(px);
     setPosY(py);
+
+    name = tex->name();
 }
 
 piImage::piImage(piTexturePtr_t tex,  float px, float py, float ww, float hh) : piImage(tex, px, py)
@@ -189,10 +191,6 @@ piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp) : piImage()
     setSize( w, h );
 
     updateUVCoordinates( x,y, w,h, sw,sh);
-
-    // glBindBuffer(GL_ARRAY_BUFFER, VBO);        // Bind VBO
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);          // Unbind VBO
 }
 
 piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py) : piImage(tex, sp)
@@ -207,36 +205,38 @@ piImage::piImage(piTexturePtr_t tex, piSpritePtr_t sp, float px, float py, float
     setSizeW(ww);
     setSizeH(hh);
 
-    printf("\nDEBUG: piImage::piImage() ...  WxH: %d x %d", (int) ww, (int) hh );
+    // printf("\nDEBUG: piImage::piImage() ...  WxH: %d x %d", (int) ww, (int) hh );
 }
 
 piImage::piImage(const char *path) : piImage()
 {
-    // printf("\nDEBUG: piImage::piImage() ...  ENTER   path: %s ", path);
-
     texture = piTexture::create(path);
+
+    name = path;
 
     int w = texture->width();
     int h = texture->height();
 
     setSize( w, h );
-
-    printf("\nDEBUG: piImage::piImage() ...  EXIT");
-    fflush(stdout);
 }
 
 piImage::piImage(const char *path, float px, float py) : piImage(path)
 {
     setPosX(px);
     setPosY(py);
+
+    name = path;
 }
 
 piImage::piImage(const char *path, float px, float py, float ww, float hh) : piImage(path)
 {
-    setPosX(px);
-    setPosY(py);
+    // setPosX(px);
+    // setPosY(py);
+
     setSizeW(ww);
     setSizeH(hh);
+
+    name = path;
 }
 
 //======================================================================================================
@@ -244,8 +244,8 @@ piImage::piImage(const char *path, float px, float py, float ww, float hh) : piI
 piImage::~piImage()
 {
     // Cleanup
-    glDeleteBuffers(1,  &VBO);
-    glDeleteBuffers(1,  &EBO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 }
 
 //======================================================================================================

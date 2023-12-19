@@ -44,7 +44,6 @@ public:
 
     ~piImage();
 
-    void setName(std::string nn)   { name = nn; }
     void draw();
 
 private:
@@ -63,6 +62,8 @@ private:
     GLuint posAttrib;
     GLuint colorAttrib;
     GLuint texCoordAttrib;
+
+    void commonSetup();
 
 }; // CLASS - piImage
 

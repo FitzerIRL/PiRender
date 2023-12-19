@@ -1,15 +1,16 @@
 #include <piObject.h>
 #include <piUtils.h>
+#include <piAnimation.h>
 
 //======================================================================================================
 
 piObject::piObject() :
-      obj_w(0.0f),     obj_h(0.0f),
-    scale_x(1.0f),   scale_y(1.0f),
-      pos_x(0.0f),     pos_y(0.0f),
-      vel_x(0.0f),     vel_y(0.0f),
-      acc_x(0.0f),     acc_y(0.0f),
-      anchor_x(0.5f), anchor_y(0.5f),
+ obj_size(0.0f, 0.0f),
+    scale(1.0f, 1.0f),
+      pos(0.0f, 0.0f),
+      vel(0.0f, 0.0f),
+      acc(0.0f, 0.0f),
+   anchor(0.0f, 0.5f),
       vel_r(0.0f),     acc_r(0.0f),
       angle(0.0f), angle_deg(0.0f),
        time(0.0f), last_secs(0.0f),
@@ -88,12 +89,14 @@ std::cout << std::endl << " updateColor() - AFTER > " << std::endl << vertices <
 
 //   hasMotion() - return TRUE ... if non-zero Acceleration or Velocity
 //
-#define hasMotion()  (fabs(vel_x) > 0.0f || fabs(vel_y) > 0.0f || \
-                      fabs(acc_x) > 0.0f || fabs(acc_y) > 0.0f || \
+#define hasMotion()  (fabs(vel.x) > 0.0f || fabs(vel.y) > 0.0f || \
+                      fabs(acc.x) > 0.0f || fabs(acc.y) > 0.0f || \
                       fabs(vel_r) > 0.0f || fabs(acc_r) > 0.0f )
 
 void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 {
+    float dt = time_secs - last_secs;
+
     time = time_secs;
 
 // std::cout << std::endl << "DEBUG:   hasMotion() " << hasMotion() << "  time_secs: " << time_secs  << "  last_secs: " << last_secs<< std::endl;
@@ -104,14 +107,14 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 
         // Compute VELOCITY
         //
-        vel_x += (acc_x * dt);
-        vel_y += (acc_y * dt);
+        vel.x += (acc.x * dt);
+        vel.y += (acc.y * dt);
         vel_r += (acc_r * dt);
 
         // Compute POSITION
         //
-        pos_x     += (vel_x * dt);
-        pos_y     += (vel_y * dt);
+        pos.x     += (vel.x * dt);
+        pos.y     += (vel.y * dt);
         angle_deg += (vel_r * dt);
 
         dirty = true;
@@ -119,26 +122,39 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 
     last_secs = time_secs;
 
+
+    if(animators.size())
+    {
+        for (auto& animator : animators)
+        {
+            animator->update(dt);
+
+            if(animator->isComplete() == false)
+            {
+                dirty = true;
+            }
+        }
+
+        animators.erase(
+            std::remove_if(
+                animators.begin(),
+                animators.end(),
+                [](const auto& animator) { return animator->isComplete(); }
+            ),
+            animators.end()
+        );
+    }//ENDIF
+
     if(!dirty)
     {
-    //  return;
+      return;
     }
 
     dirty = false;
 
-    const glm::vec3 about_y_axis = glm::vec3(0.0f, 0.0f, 1.0f); //  = glm::vec3(0.0f, 1.0f, 0.0f);
+    const glm::vec3 about_y_axis = glm::vec3(0.0f, 0.0f, 1.0f);
 
-// Verify that the angle is correctly calculated
-// std::cout << "Angle (degrees): " << angle_deg << std::endl;
-// std::cout << "Angle (radians): " << angle     << std::endl;
-// std::cout << "Scale (scale_x): " << scale_x   << std::endl;
-// std::cout << "Scale (scale_y): " << scale_y   << std::endl;
-// std::cout << "Dims    (obj_w): " << obj_w     << std::endl;
-// std::cout << "Dims    (obj_h): " << obj_h     << std::endl;
-// std::cout << "Dims    (pos_x): " << pos_x     << std::endl;
-// std::cout << "Dims    (pos_y): " << pos_y     << std::endl;
-
-    float angleInDegrees = angle_deg;//90.0f;
+    float angleInDegrees = angle_deg;
     float angleInRadians = glm::radians(angleInDegrees);
 
     // std::cout << "Angle in Degrees: " << angleInDegrees << std::endl;
@@ -147,15 +163,16 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
     // M = T * R * S * T
 
     // Anchor offset
-    float mpx = (anchor_x - 0.5 );
-    float mpy = (anchor_y - 0.5 );
+    float mpx = (anchor.x - 0.5 );
+    float mpy = (anchor.y - 0.5 );
 
-    float dx = -(mpx * obj_w);
-    float dy = -(mpy * obj_h);
+    float dx = -(mpx * obj_size.x);
+    float dy = -(mpy * obj_size.y);
 
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos_x + dx, pos_y + dy, 0.0f)) *
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x + dx, pos.y + dy, 0.0f)) *
                       glm::rotate(   glm::mat4(1.0f), glm::radians(-angle_deg), about_y_axis) *
-                      glm::scale(    glm::mat4(1.0f), glm::vec3(scale_x * obj_w, scale_y * obj_h, 1.0f));
+                      glm::scale(    glm::mat4(1.0f), glm::vec3(scale.x * obj_size.x,
+                                                                scale.y * obj_size.y, 1.0f));
 
     // analyzeTransformation(model, "model"); // DEBUG
     // analyzeTransformation(projection, "projection"); // DEBUG
@@ -169,3 +186,28 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 
 //======================================================================================================
 //======================================================================================================
+
+
+piAnimatorPtr_t piObject::animateProperty(glm::vec2 &prop, glm::vec2 end_val, float duration /* = 50 */)
+{
+    piObjectPtr_t obj =  shared_from_this();
+
+    piAnimatorPtr_t anim = piAnimator::create( obj, prop, end_val, duration );
+
+    addAnimator( anim );
+
+    return anim;
+}
+
+void piObject::addAnimator(piAnimatorPtr_t animator)
+{
+    animators.push_back(animator);
+}
+
+void piObject::updateAll(float deltaTime)
+{
+    for (const auto& animator : animators)
+    {
+        animator->update(deltaTime);
+    }
+}

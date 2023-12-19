@@ -2,18 +2,26 @@
 #pragma once
 
 #include <piCore.h>
+// #include <piAnimation.h>
 
 #include <string>
 #include <vector>
+#include <list>
 #include <memory>
+#include <iostream>
 
 // #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 // #include <glm/gtc/type_ptr.hpp>
 
+class piAnimator;
 
-class piObject
+class piObject : public std::enable_shared_from_this<piObject>
 {
+
+     // Use piObjectPtr_t
+    typedef std::shared_ptr<piAnimator> piAnimatorPtr_t;
+
 public:
 
      piObject();
@@ -27,16 +35,16 @@ public:
                alpha_ == other.alpha_ &&
                textureWidth == other.textureWidth &&
                textureHeight == other.textureHeight &&
-               obj_w == other.obj_w &&
-               obj_h == other.obj_h &&
-               scale_x == other.scale_x &&
-               scale_y == other.scale_y &&
-               pos_x == other.pos_x &&
-               pos_y == other.pos_y &&
-               vel_x == other.vel_x &&
-               vel_y == other.vel_y &&
-               acc_x == other.acc_x &&
-               acc_y == other.acc_y &&
+               obj_size.x == other.obj_size.x &&
+               obj_size.y == other.obj_size.y &&
+               scale.x == other.scale.x &&
+               scale.y == other.scale.y &&
+               pos.x == other.pos.x &&
+               pos.y == other.pos.y &&
+               vel.x == other.vel.x &&
+               vel.y == other.vel.y &&
+               acc.x == other.acc.x &&
+               acc.y == other.acc.y &&
                vel_r == other.vel_r &&
                acc_r == other.acc_r &&
                angle == other.angle &&
@@ -54,44 +62,75 @@ public:
     virtual void draw() {}; // pure virtual
     virtual void update(glm::mat4 &projection, float time_secs = 0.0f);
 
-    inline void setSize( float ww, float hh) { dirty = true; obj_w = ww; obj_h = hh; };
-    inline void setSizeW(float sw)           { dirty = true; obj_w = sw; };
-    inline void setSizeH(float sh)           { dirty = true; obj_h = sh; };
+    // SIZE
+    inline void setSize(float sx, float sy)    { dirty = true; obj_size = glm::vec2(sx, sy); };
+    inline void setSize(const glm::vec2& size) { dirty = true; obj_size = size; }
+    inline void setSizeW(float sw)             { dirty = true; obj_size.x = sw; };
+    inline void setSizeH(float sh)             { dirty = true; obj_size.y = sh; };
 
-    inline float getSizeW()                  { return obj_w; }
-    inline float getSizeH()                  { return obj_h; }
+    inline glm::vec2 getSize()  const { return obj_size;   };
+    inline float     getSizeW() const { return obj_size.x; };
+    inline float     getSizeH() const { return obj_size.y; };
 
-    inline void setAnchor( float ax, float ay) { dirty = true; anchor_x = CLAMP_01(ax); anchor_y = CLAMP_01(ay); };
-    inline void setAnchorX(float ax)           { dirty = true; anchor_x = CLAMP_01(ax); };
-    inline void setAnchorY(float ay)           { dirty = true; anchor_y = CLAMP_01(ay); };
+    // POSITION
+    inline void setPos(float px, float py)  { dirty = true; pos   = glm::vec2(px, py); };
+    inline void setPos(const glm::vec2& pp) { dirty = true; pos   = pp; };
+    inline void setPosX(float px)           { dirty = true; pos.x = px; };
+    inline void setPosY(float py)           { dirty = true; pos.y = py; };
 
-    inline void setPos( float px, float py) { dirty = true; pos_x = px; pos_y = py; };
-    inline void setPosX(float px)           { dirty = true; pos_x = px; };
-    inline void setPosY(float py)           { dirty = true; pos_y = py; };
+    inline glm::vec2 getPos()  const { return pos;   };
+    inline float     getPosX() const { return pos.x; };
+    inline float     getPosY() const { return pos.y; };
 
-    inline float getPosX()                  { return pos_x; }
-    inline float getPosY()                  { return pos_y; }
+    // ANCHOR
+    inline void setAnchor(float ax, float ay)  { dirty = true; anchor   = glm::clamp(glm::vec2(ax, ay), 0.0f, 1.0f); };
+    inline void setAnchor(const glm::vec2& aa) { dirty = true; anchor   = glm::clamp(aa, 0.0f, 1.0f); };
+    inline void setAnchorX(float ax)           { dirty = true; anchor.x = glm::clamp(ax, 0.0f, 1.0f); };
+    inline void setAnchorY(float ay)           { dirty = true; anchor.y = glm::clamp(ay, 0.0f, 1.0f); };
 
-    inline void setScale( float ss)         { dirty = true; scale_x = CLAMP_01(ss); scale_y = CLAMP_01(ss); };
-    inline void setScaleX(float sx)         { dirty = true; scale_x = CLAMP_01(sx); };
-    inline void setScaleY(float sy)         { dirty = true; scale_y = CLAMP_01(sy); };
+    inline glm::vec2 getAnchor()  const { return anchor;   };
+    inline float     getAnchorX() const { return anchor.x; };
+    inline float     getAnchorY() const { return anchor.y; };
 
-    void setAngleDegrees(float aa)          { dirty = true; angle_deg = aa; } //angle = aa * M_PI / 180.0f; };
+    // SCALE
+    inline void setScale(float sx, float sy)  { dirty = true; scale   = glm::clamp(glm::vec2(sx, sy), 0.0f, 1.0f); };
+    inline void setScale(const glm::vec2& ss) { dirty = true; scale   = glm::clamp(ss, 0.0f, 1.0f); };
+    inline void setScaleX(float sx)           { dirty = true; scale.x = glm::clamp(sx, 0.0f, 1.0f); };
+    inline void setScaleY(float sy)           { dirty = true; scale.y = glm::clamp(sy, 0.0f, 1.0f); };
+
+    inline glm::vec2 getScale()  const { return scale;   };
+    inline float     getScaleX() const { return scale.x; };
+    inline float     getScaleY() const { return scale.y; };
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     //
     // PHYSICS
     //
-    inline void setVelX(float vx)           { dirty = true; vel_x = vx; };
-    inline void setVelY(float vy)           { dirty = true; vel_y = vy; };
 
-    inline void setAccX(float ax)           { dirty = true; acc_x = ax; };
-    inline void setAccY(float ay)           { dirty = true; acc_y = ay; };
+    // VELOCITY
+    inline void setVel(const glm::vec2& vv) { dirty = true; vel   = vv; };
+    inline void setVelX(float vx)           { dirty = true; vel.x = vx; };
+    inline void setVelY(float vy)           { dirty = true; vel.y = vy; };
 
+    inline glm::vec2 getVel() const { return vel; };
+
+    // ACCLERATION
+    inline void setAcc(const glm::vec2& aa) { dirty = true; acc = aa; };
+    inline void setAccX(float ax)           { dirty = true; acc.x = ax; };
+    inline void setAccY(float ay)           { dirty = true; acc.y = ay; };
+
+    inline glm::vec2 getAcc() const { return acc; };
+
+    // ANGULAR
     inline void setVelR(float vr)           { dirty = true; vel_r = vr; };
     inline void setAccR(float ar)           { dirty = true; acc_r = ar; };
 
+    inline void setAngleDegrees(float deg)  { dirty = true; angle_deg = deg; };
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    void setName(std::string nn)            { name = nn;                }
+    std::string getName()                   { return name;              }
 
     float alpha()                           { return alpha_;            }
     void  setAlpha(float a)                 { dirty = true; alpha_ = CLAMP_01(a); }
@@ -106,6 +145,13 @@ public:
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    std::list<piAnimatorPtr_t> animators;
+
+    piAnimatorPtr_t animateProperty(glm::vec2 &prop, glm::vec2 end_val, float duration = 50);
+
+    void addAnimator(piAnimatorPtr_t animator);
+    void updateAll(float deltaTime);
+
 public:
     GLuint u_mvpMatrix;
     GLuint iTime;
@@ -115,12 +161,14 @@ public:
 
     int textureWidth, textureHeight;
 
-    float obj_w, obj_h;
-    float scale_x, scale_y;
+    glm::vec2 obj_size; // object size
+    glm::vec2 scale;
+    glm::vec2 anchor;
 
-    float pos_x, pos_y;
-    float vel_x, vel_y;
-    float acc_x, acc_y;
+    glm::vec2 pos; // position
+    glm::vec2 vel; // velocity
+    glm::vec2 acc; // acceleration
+
     float anchor_x, anchor_y;
     float vel_r, acc_r;
     float angle, angle_deg;
@@ -141,5 +189,9 @@ protected:
 
 }; // CLASS - piObject
 
+//class piObject; //fwd
 
 typedef std::shared_ptr<piObject> piObjectPtr_t;
+
+//======================================================================================================
+//======================================================================================================
