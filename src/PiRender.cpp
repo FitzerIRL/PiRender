@@ -133,6 +133,7 @@ int main()
     // piObjectPtr_t  ball0 = piImage::create(tex, RES_W * 0.25f, RES_H * 0.25f);
     // scene.addObject( ball0 );
 
+#if 0
     piObjectPtr_t ball = piImage::create("ball.png", 10, RES_H * 0.85);
     ball->setAnchor(0.0, 0.0);
 
@@ -148,15 +149,23 @@ int main()
     });
 
     scene.addObject( ball );
+#endif
 
-    piObjectPtr_t face = piImage::create("Smiling_Face.png",RES_W/4, RES_H/2);
+    piObjectPtr_t face = piImage::create("Smiling_Face.png",RES_W/2, RES_H/2);
     scene.addObject( face );
-    face->setAnchor(1.0, 0.0);
-
-    face->animateProperty( face->pos, glm::vec2(RES_W, face->pos.y), 85 /2 );
+    // face->setAnchor(1.0, 0.0);
+    // face->animateProperty( face->pos, glm::vec2(RES_W, face->pos.y), 85 /2 );
     // face->setAccX(10.01);
     // face->setAccR(10.01);
     // face->setAngleDegrees(45.0);
+
+    piObjectPtr_t face1 = piImage::create("Smiling_Face.png",0, 0);
+    scene.addObject( face1 );
+    face1->setAnchor(0.0, 0.0);
+
+    piObjectPtr_t face2 = piImage::create("Smiling_Face.png",RES_W, RES_H);
+    scene.addObject( face2 );
+    face2->setAnchor(1.0, 1.0);
 #endif
 
     // Main rendering loop

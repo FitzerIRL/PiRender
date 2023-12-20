@@ -30,7 +30,7 @@ class piSprite
 {
 public:
 
-    static piSpritePtr_t create() { return std::make_shared<piSprite>(); }
+    static auto create() { return std::make_shared<piSprite>(); }
 
     std::string name;
 
@@ -79,8 +79,8 @@ class piSpritesheet
 public:
 
     // Factory function
-    static piSpritesheetPtr_t create()                        { return std::make_shared<piSpritesheet>();     }
-    static piSpritesheetPtr_t create(const std::string& path) { return std::make_shared<piSpritesheet>(path); }
+    static auto create()                        { return std::make_shared<piSpritesheet>();     }
+    static auto create(const std::string& path) { return std::make_shared<piSpritesheet>(path); }
 
     piSpritesheet();
     piSpritesheet(const std::string& path);

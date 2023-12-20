@@ -10,7 +10,7 @@ piObject::piObject() :
       pos(0.0f, 0.0f),
       vel(0.0f, 0.0f),
       acc(0.0f, 0.0f),
-   anchor(0.0f, 0.5f),
+   anchor(0.5f, 0.5f),
       vel_r(0.0f),     acc_r(0.0f),
       angle(0.0f), angle_deg(0.0f),
        time(0.0f), last_secs(0.0f),
@@ -95,16 +95,17 @@ std::cout << std::endl << " updateColor() - AFTER > " << std::endl << vertices <
 
 void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 {
-    float dt = time_secs - last_secs;
+    float dt = (time_secs - last_secs);
 
     time = time_secs;
 
 // std::cout << std::endl << "DEBUG:   hasMotion() " << hasMotion() << "  time_secs: " << time_secs  << "  last_secs: " << last_secs<< std::endl;
 
+#define USE_PHYSICS
+#ifdef USE_PHYSICS
+
     if( hasMotion() && last_secs > 0 && time_secs != 0.0f )
     {
-        float dt = (time_secs - last_secs);
-
         // Compute VELOCITY
         //
         vel.x += (acc.x * dt);
@@ -119,9 +120,14 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 
         dirty = true;
     }
+#endif // USE_PHYSICS
 
     last_secs = time_secs;
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#define USE_ANIMATORS
+#ifdef USE_ANIMATORS
 
     if(animators.size())
     {
@@ -135,6 +141,7 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
             }
         }
 
+        // Find completed animators
         animators.erase(
             std::remove_if(
                 animators.begin(),
@@ -144,6 +151,10 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
             animators.end()
         );
     }//ENDIF
+
+#endif // USE_ANIMATORS
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     if(!dirty)
     {
@@ -157,7 +168,7 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
     float angleInDegrees = angle_deg;
     float angleInRadians = glm::radians(angleInDegrees);
 
-    // std::cout << "Angle in Degrees: " << angleInDegrees << std::endl;
+    // std::cout << std::endl << "############### Angle in Degrees: " << angleInDegrees << std::endl;
     // std::cout << "Angle in Radians: " << angleInRadians << std::endl;
 
     // M = T * R * S * T
@@ -170,12 +181,12 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
     float dy = -(mpy * obj_size.y);
 
     glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x + dx, pos.y + dy, 0.0f)) *
-                      glm::rotate(   glm::mat4(1.0f), glm::radians(-angle_deg), about_y_axis) *
+                      glm::rotate(   glm::mat4(1.0f), glm::radians(-angle_deg), about_y_axis)  *
                       glm::scale(    glm::mat4(1.0f), glm::vec3(scale.x * obj_size.x,
-                                                                scale.y * obj_size.y, 1.0f));
+                                                                scale.y * obj_size.y, 0.0f));
 
-    // analyzeTransformation(model, "model"); // DEBUG
-    // analyzeTransformation(projection, "projection"); // DEBUG
+    // analyzeTransformation(model, "model", false); // DEBUG
+    // analyzeTransformation(projection, "projection", false); // DEBUG
 
     mvpMatrix = projection * model;
 

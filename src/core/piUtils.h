@@ -21,7 +21,7 @@ std::ostream& operator<<(std::ostream& os, const glm::quat& q);    // Pretty pri
 
 std::ostream& operator<<(std::ostream& os, const std::vector<GLfloat>& vertices);
 
-void analyzeTransformation(const glm::mat4& model, const char* name = "");
+void analyzeTransformation(const glm::mat4& model, const char* name = "", bool details = true);
 
 //======================================================================================================
 

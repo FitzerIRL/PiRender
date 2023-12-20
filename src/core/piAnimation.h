@@ -87,11 +87,11 @@ class piAnimator
     using AnimationCallback = std::function<void(piObjectPtr_t o)>;
 
 public:
-    static piAnimatorPtr_t create(  piObjectPtr_t obj,
-                                    glm::vec2 &value,
-                                    glm::vec2 end_val,
-                                    float duration = 50,
-                                    const AnimationCallback &callback = nullptr)
+    static auto create( piObjectPtr_t obj,
+                        glm::vec2 &value,
+                        glm::vec2 end_val,
+                        float duration = 50,
+                        const AnimationCallback &callback = nullptr)
     {
         return std::make_shared<piAnimator>(obj, value, end_val, duration);
     }

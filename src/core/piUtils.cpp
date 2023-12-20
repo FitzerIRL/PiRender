@@ -82,20 +82,24 @@ std::ostream& operator<<(std::ostream& os, const std::vector<GLfloat>& vertices)
 }
 //======================================================================================================
 
-void analyzeTransformation(const glm::mat4& model, const char* name /* = "" */)
+void analyzeTransformation(const glm::mat4& model, const char* name /* = "" */, bool details /* = true */)
 {
     // Print the transformation matrix
     std::cout << std::endl << " ==================== " << name << " ==================== "<< std::endl<< std::endl;
-    std::cout << "Transformation Matrix:\n" << model << std::endl;
+    std::cout << "Matrix:\n" << model << std::endl;
 
     // Verify the transformation by applying it to a point (0, 0, 0, 1)
     glm::vec4 pointToTransform = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     glm::vec4 transformedPoint = model * pointToTransform;
 
+    if(details == false)
+        return; // skip the rest
+
     // Decompose the matrix
     glm::vec3 translation, scaling, skew;
     glm::quat rotation;
     glm::vec4 perspective;
+
 
     glm::decompose(model, scaling, rotation, translation, skew, perspective);
 

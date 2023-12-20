@@ -19,7 +19,7 @@ public:
 
 
     // Factory function
-    static piShaderToyPtr_t create()  { return std::make_shared<piShaderToy>(); }
+    static auto create()  { return std::make_shared<piShaderToy>(); }
 
      void draw();
      void update( glm::mat4 &projection, float time_secs);

@@ -19,10 +19,10 @@ public:
     ~piTexture();
 
     // Factory function
-    static piTexturePtr_t create()                     { return std::make_shared<piTexture>();             }
-    static piTexturePtr_t create(piTexturePtr_t tex)   { return std::make_shared<piTexture>(tex);          }
-    static piTexturePtr_t create(const char *path)     { return std::make_shared<piTexture>(path);         }
-    static piTexturePtr_t create(std::string path)     { return std::make_shared<piTexture>(path.c_str()); }
+    static auto create()                     { return std::make_shared<piTexture>();             }
+    static auto create(piTexturePtr_t tex)   { return std::make_shared<piTexture>(tex);          }
+    static auto create(const char *path)     { return std::make_shared<piTexture>(path);         }
+    static auto create(std::string path)     { return std::make_shared<piTexture>(path.c_str()); }
 
     // Load PNG image using stb_image
     void loadTexture(const std::string path) { loadTexture(path.c_str() ); };
