@@ -86,7 +86,7 @@ int main()
 
     piScene scene;
 
-//#define INCLUDE_BG
+#define INCLUDE_BG
 #ifdef INCLUDE_BG
 
     piShaderToyPtr_t background = piShaderToy::create();
@@ -155,9 +155,9 @@ int main()
     scene.addObject( face );
     // face->setAnchor(1.0, 0.0);
     // face->animateProperty( face->pos, glm::vec2(RES_W, face->pos.y), 85 /2 );
-    // face->setAccX(10.01);
-    // face->setAccR(10.01);
-    // face->setAngleDegrees(45.0);
+    face->setAccX(10.01);
+    face->setAccR(100.01);
+    face->setAngleDegrees(45.0);
 
     piObjectPtr_t face1 = piImage::create("Smiling_Face.png",0, 0);
     scene.addObject( face1 );
@@ -168,6 +168,49 @@ int main()
     face2->setAnchor(1.0, 1.0);
 #endif
 
+#if 1
+    piSpritesheet rgb_sheet("squares.json");
+
+    piSpritePtr_t pRed = rgb_sheet.getSprite("red.png");
+
+    if(pRed)
+    {
+        float sw = pRed->frame.w;
+        float sh = pRed->frame.h;
+
+        piTexturePtr_t rgbTex = rgb_sheet.getTexture();
+        piImagePtr_t  redRed = piImage::create(rgbTex, pRed, 200, 200, sw, sh);
+        redRed->setAnchor(0.5, 0.5);
+        redRed->setPos(RES_W/2, RES_H/2);
+
+        scene.addObject( redRed );
+    }
+    else
+    {
+        std::cout << "ERROR: pRed is NULL" << std::endl;
+    }
+
+
+    piSpritePtr_t pBlue = rgb_sheet.getSprite("blue.png");
+
+    if(pBlue)
+    {
+        float sw = pBlue->frame.w;
+        float sh = pBlue->frame.h;
+
+        piTexturePtr_t  rgbTex = rgb_sheet.getTexture();
+        piImagePtr_t  blueBlue = piImage::create(rgbTex, pBlue, 200, 200, sw, sh);
+        blueBlue->setAnchor(0.5, 0.5);
+        blueBlue->setPos(RES_W/6, RES_H/2);
+        blueBlue->setAngleDegrees(45.0);
+
+        scene.addObject( blueBlue );
+    }
+    else
+    {
+        std::cout << "ERROR: pRed is NULL" << std::endl;
+    }
+#endif
     // Main rendering loop
     while (!glfwWindowShouldClose(window) )
     {

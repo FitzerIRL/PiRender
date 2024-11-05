@@ -28,23 +28,30 @@ public:
     ~piObject();
 
     bool operator==(const piObject& other) const {
+
+        if(obj_size != other.obj_size) return false; // OBJ SIZE
+        if(tex_size != other.tex_size) return false; // TEX SIZE
+        if(pos      != other.pos)      return false; // POSITION
+        if(scale    != other.scale)    return false; // SCALE
+        if(vel      != other.vel)      return false; // VELOCITY
+        if(acc      != other.acc)      return false; // ACCELERATION
+
         // Compare all relevant members for equality
         return u_mvpMatrix == other.u_mvpMatrix &&
                iTime == other.iTime &&
                u_alpha == other.u_alpha &&
-               alpha_ == other.alpha_ &&
-               textureWidth == other.textureWidth &&
-               textureHeight == other.textureHeight &&
-               obj_size.x == other.obj_size.x &&
-               obj_size.y == other.obj_size.y &&
-               scale.x == other.scale.x &&
-               scale.y == other.scale.y &&
-               pos.x == other.pos.x &&
-               pos.y == other.pos.y &&
-               vel.x == other.vel.x &&
-               vel.y == other.vel.y &&
-               acc.x == other.acc.x &&
-               acc.y == other.acc.y &&
+               alpha_  == other.alpha_ &&
+
+            //    obj_size.x == other.obj_size.x &&
+            //    obj_size.y == other.obj_size.y &&
+            //    scale.x == other.scale.x &&
+            //    scale.y == other.scale.y &&
+            //    pos.x == other.pos.x &&
+            //    pos.y == other.pos.y &&
+            //    vel.x == other.vel.x &&
+            //    vel.y == other.vel.y &&
+            //    acc.x == other.acc.x &&
+            //    acc.y == other.acc.y &&
                vel_r == other.vel_r &&
                acc_r == other.acc_r &&
                angle == other.angle &&
@@ -159,17 +166,15 @@ public:
     GLuint u_alpha;
     float alpha_;
 
-    int textureWidth, textureHeight;
+    glm::ivec2 tex_size;
+    glm::vec2  obj_size;
+    glm::vec2  scale;
 
-    glm::vec2 obj_size; // object size
-    glm::vec2 scale;
-    glm::vec2 anchor;
+    glm::vec2 pos;    // position
+    glm::vec2 vel;    // velocity
+    glm::vec2 acc;    // acceleration
+    glm::vec2 anchor; // anchor
 
-    glm::vec2 pos; // position
-    glm::vec2 vel; // velocity
-    glm::vec2 acc; // acceleration
-
-    float anchor_x, anchor_y;
     float vel_r, acc_r;
     float angle, angle_deg;
 

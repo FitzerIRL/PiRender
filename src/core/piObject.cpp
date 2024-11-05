@@ -5,7 +5,7 @@
 //======================================================================================================
 
 piObject::piObject() :
- obj_size(0.0f, 0.0f),
+ obj_size(1.0f, 1.0f),
     scale(1.0f, 1.0f),
       pos(0.0f, 0.0f),
       vel(0.0f, 0.0f),
@@ -54,9 +54,7 @@ void piObject::updateUVCoordinates(int x, int y, int w, int h, int sw, int sh)
 
     const float top     = 1.0 - top0;
     const float bottom  = 1.0 - bottom0;
-
-    // Only update UV coordinates, leaving vertex coordinates unchanged
-
+piSpritePtr_t
     vertices[9*0 + 7 + 0] = left;   vertices[9*0 + 7 + 1] = top;    // bottom-left
     vertices[9*1 + 7 + 0] = right;  vertices[9*1 + 7 + 1] = top;    // bottom-right
     vertices[9*2 + 7 + 0] = left;   vertices[9*2 + 7 + 1] = bottom; // top-left
@@ -106,16 +104,14 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
 
     if( hasMotion() && last_secs > 0 && time_secs != 0.0f )
     {
-        // Compute VELOCITY
+        // Compute VELOCITY & POSITION
         //
-        vel.x += (acc.x * dt);
-        vel.y += (acc.y * dt);
-        vel_r += (acc_r * dt);
+        vel += (acc * dt);
+        pos += (vel * dt);
 
-        // Compute POSITION
+        // Compute ROTATION VELOCITY & ANGLE
         //
-        pos.x     += (vel.x * dt);
-        pos.y     += (vel.y * dt);
+        vel_r     += (acc_r * dt);
         angle_deg += (vel_r * dt);
 
         dirty = true;
@@ -180,17 +176,43 @@ void piObject::update( glm::mat4 &projection, float time_secs /* = 0.0 */ )
     float dx = -(mpx * obj_size.x);
     float dy = -(mpy * obj_size.y);
 
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x + dx, pos.y + dy, 0.0f)) *
-                      glm::rotate(   glm::mat4(1.0f), glm::radians(-angle_deg), about_y_axis)  *
-                      glm::scale(    glm::mat4(1.0f), glm::vec3(scale.x * obj_size.x,
-                                                                scale.y * obj_size.y, 0.0f));
+    glm::mat4 model = glm::mat4(1.0f);
+    // glm::mat4 II = glm::mat4(1.0f);
 
-    // analyzeTransformation(model, "model", false); // DEBUG
+    // std::cout << "############### mpx: " << mpx << " mpy: " << mpy << std::endl;
+    // std::cout << "############### dx: " <<   dx << " dy: "  <<  dy << std::endl;
+
+    // glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x + dx, pos.y + dy, 0.0f)) *
+    //                   glm::rotate(   glm::mat4(1.0f), glm::radians(-angle_deg), about_y_axis)  *
+    //                   glm::scale(    glm::mat4(1.0f), glm::vec3(scale.x * obj_size.x,
+    //                                                             scale.y * obj_size.y, 0.0f));
+
+     // analyzeTransformation(model, "model", false); // DEBUG
     // analyzeTransformation(projection, "projection", false); // DEBUG
+
+    glm::vec3 rotation = glm::vec3(0.0f, 0.0f, -angle_deg);
+
+    model = glm::translate(model, glm::vec3(pos.x + dx, pos.y + dy, 0.0f));
+
+    model = glm::rotate(   model, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)); //
+    model = glm::rotate(   model, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)); //
+    model = glm::rotate(   model, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)); //
+
+    model = glm::scale(    model, glm::vec3(scale.x * obj_size.x, scale.y * obj_size.y, 1.0f));
+
+    // std::cout << "############### pos.x: " << pos.x << " pos.y: " << pos.y << std::endl;
+    // std::cout << "############### dx: " << dx << " dy: " << dy << std::endl;
+    // std::cout << "############### scale.x: " << scale.x << " scale.y: " << scale.y << std::endl;
+    // std::cout << "############### obj_size.x: " << obj_size.x << " obj_size.y: " << obj_size.y << std::endl;
+
+    // analyzeTransformation(II,    "II",    false); // DEBUG
+    // analyzeTransformation(model, "model", false); // DEBUG
 
     mvpMatrix = projection * model;
 
-    // analyzeTransformation(mvpMatrix, "mvpMatrix"); // DEBUG
+    // analyzeTransformation(mvpMatrix, "mvpMatrix", false); // DEBUG
+
+    // analyzeTransformation(this->getMVPmatrix(), "getMVPmatrix", false); // DEBUG
 
     // printf("\nDEBUG  piObject::update() ... time_secs: %f    #### ", time_secs);
 }

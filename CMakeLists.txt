@@ -73,3 +73,7 @@ file(COPY ${CMAKE_SOURCE_DIR}/resources/shaders/fragStarField_1.glsl DESTINATION
 file(COPY ${CMAKE_SOURCE_DIR}/resources/spritesheet/spritesheet.json DESTINATION ${CMAKE_BINARY_DIR}/)
 file(COPY ${CMAKE_SOURCE_DIR}/resources/spritesheet/spritesheet.png DESTINATION ${CMAKE_BINARY_DIR}/)
 
+
+file(COPY ${CMAKE_SOURCE_DIR}/resources/spritesheet/squares.json DESTINATION ${CMAKE_BINARY_DIR}/)
+file(COPY ${CMAKE_SOURCE_DIR}/resources/spritesheet/squares.png DESTINATION ${CMAKE_BINARY_DIR}/)
+

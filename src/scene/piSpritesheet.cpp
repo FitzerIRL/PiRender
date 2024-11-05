@@ -120,6 +120,7 @@ piSpritePtr_t piSpritesheet::getSprite(const std::string& name)
     }
 
     // Sprite not found, return a pair indicating failure
+    std::cerr << name << " NOT found in spritesheet" << std::endl;
     return nullptr;
 }
 

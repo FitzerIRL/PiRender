@@ -52,8 +52,6 @@ private:
 
     piTexturePtr_t texture;
 
-    int textureWidth, textureHeight;
-
     GLuint VBO, EBO;
 
     GLuint shaderProgram_;

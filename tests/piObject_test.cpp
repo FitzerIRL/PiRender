@@ -19,8 +19,8 @@ protected:
 
 TEST_F(piObjectTest, DefaultConstructor) {
     piObject obj;
-    EXPECT_EQ(obj.getSize(), glm::vec2(0.0f, 0.0f));
-    EXPECT_EQ(obj.getPos(), glm::vec2(0.0f, 0.0f));
+    EXPECT_EQ(obj.getSize(), glm::vec2(1.0f, 1.0f));
+    EXPECT_EQ(obj.getPos(),  glm::vec2(0.0f, 0.0f));
     // Add more assertions for other default values
 }
 
